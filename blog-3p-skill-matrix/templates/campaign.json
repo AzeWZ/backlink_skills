@@ -259,25 +259,25 @@
     "payload_semantic_auditor": "ARTICLE_LANGUAGE_REVIEWER_HTML_PRIMARY",
     "gate_payload_acceptance": "MANIFEST_HASH_AND_REQUIREMENTS_ONLY",
     "model_owned_research_record": "ONE_EVIDENCE_PACK_WITH_DERIVED_VIEWS",
-    "review_route": "AUTHOR_QA_INTEGRATED_UNLESS_WR_ESCALATED",
+    "review_route": "AUTHOR_QA_INTEGRATED_WITH_OWNER_EXPLICIT_WR_ONLY",
     "owner_confirmation_receipt": "HASH_BOUND_OWNER_ORIGINATED_ARTIFACT",
     "article_artifact_root_template": "articles/{article_id}",
     "quality_routes": {
       "default": "AUTHOR_QA_INTEGRATED",
       "author_qa_receipt": "reviews/author-qa-N.json",
-      "independent_r_escalation": "INDEPENDENT_R_ESCALATION",
-      "wq_late_change": "RERUN_AUTHOR_QA_OR_ESCALATE_WR"
+      "independent_r": "OWNER_EXPLICIT_INDEPENDENT_R_ONLY",
+      "wq_late_change": "RERUN_AUTHOR_QA_OR_OWNER_DECISION"
     }
   },
   "model_first_execution_policy": {
-    "mode": "MODEL_CONTINUOUS_CREATION_WITH_DUAL_QUALITY_ROUTES",
+    "mode": "MODEL_CONTINUOUS_CREATION_NORMAL_WQ_WITH_OWNER_EXPLICIT_WR",
     "default_review_tier": "AUTHOR_QA_INTEGRATED",
     "writer_continuous_sequence": ["RESEARCH", "DRAFT", "VISUALS", "PAYLOAD", "AUTHOR_QA"],
     "author_qa_protocol": "CANDIDATE_LOCK_ADVERSARIAL_SELF_QA_TARGETED_REPAIR_FINAL_BIND",
-    "independent_r_escalation": "RISK_OR_OWNER_TRIGGERED_ONLY",
-    "separate_research_review": "WR_RISK_TRIGGERED_ONLY",
+    "independent_r_escalation": "OWNER_EXPLICIT_ONLY",
+    "separate_research_review": "OWNER_EXPLICIT_WR_ONLY",
     "independent_final_review": "REQUIRED_ONLY_FOR_WR",
-    "wq_to_wr_downgrade": "PROHIBITED",
+    "wq_unresolved_material_risk": "OWNER_DECISION_REQUIRED",
     "gatekeeper_binds_tier_and_reason": true,
     "mechanical_checks": "POSTHOC_INTEGRITY_AND_SCOPE_ONLY"
   },
@@ -285,14 +285,14 @@
     "mode": "HUMAN_RELEASE_ONLY_V1",
     "purpose": "HUMAN_NATIVE_RELEASE_REQUIRED_WITH_READONLY_EVIDENCE",
     "owner_confirmation": "RECEIPT_BOUND_LOCAL_COMMAND_REQUIRED",
-    "article_flow": "WQ_DEFAULT_OR_WR_INDEPENDENT_ESCALATION",
+    "article_flow": "WQ_DEFAULT_WITH_OWNER_EXPLICIT_WR_ONLY",
     "gate_flow": "ONE_SHARED_CAMPAIGN_G_BATCH",
     "public_flow": "HUMAN_NATIVE_RELEASE_THEN_SAME_G_BATCH_READONLY",
     "automatic_model_routing": "PROHIBITED",
     "extra_debate_agents": "PROHIBITED",
     "global_content_cache": "PROHIBITED",
     "telemetry": "OPTIONAL_OBSERVE_ONLY",
-    "quality_routes": "AUTHOR_QA_INTEGRATED_DEFAULT_WITH_ONE_WAY_WR_ESCALATION"
+    "quality_routes": "AUTHOR_QA_INTEGRATED_DEFAULT_OWNER_DECISION_FOR_UNRESOLVED_RISK"
   },
   "orchestration_policy": {
     "delegation_default": "VISIBLE_SUBAGENTS",

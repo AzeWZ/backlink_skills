@@ -13,8 +13,8 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-HARNESS_PATH = ROOT / "skills/blog-3p-harness/scripts/harnessctl.py"
-SNAPSHOT_PATH = ROOT / "skills/blog-3p-human-handoff/scripts/capture_public_snapshot.py"
+HARNESS_PATH = ROOT / "skills/blog-harness/scripts/harnessctl.py"
+SNAPSHOT_PATH = ROOT / "skills/blog-human-handoff/scripts/capture_public_snapshot.py"
 PUBLIC_PAGE = ROOT / "tests/fixtures/public-page.html"
 SPEC = importlib.util.spec_from_file_location("blog_3p_public_harnessctl", HARNESS_PATH)
 assert SPEC is not None and SPEC.loader is not None

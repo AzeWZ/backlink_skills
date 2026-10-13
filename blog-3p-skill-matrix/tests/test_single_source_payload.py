@@ -12,8 +12,8 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BUILD = ROOT / "skills/blog-3p-human-handoff/scripts/build_visual_payload.py"
-VALIDATE = ROOT / "skills/blog-3p-human-handoff/scripts/validate_payload.py"
+BUILD = ROOT / "skills/blog-human-handoff/scripts/build_visual_payload.py"
+VALIDATE = ROOT / "skills/blog-human-handoff/scripts/validate_payload.py"
 TINY_PNG = (
     b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01"
     b"\x08\x06\x00\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\x0dIDAT\x08\xd7c\xf8\xcf\xc0\xf0\x1f\x00\x05\x00\x01\xff\x89\x99=\x1d\x00\x00\x00\x00IEND\xaeB`\x82"

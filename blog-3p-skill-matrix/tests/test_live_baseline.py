@@ -16,7 +16,7 @@ except ModuleNotFoundError:  # pragma: no cover - discovery normally takes the f
 
 
 ROOT = Path(__file__).resolve().parents[1]
-HARNESS_PATH = ROOT / "skills/blog-3p-harness/scripts/harnessctl.py"
+HARNESS_PATH = ROOT / "skills/blog-harness/scripts/harnessctl.py"
 SPEC = importlib.util.spec_from_file_location("blog_3p_harnessctl_live", HARNESS_PATH)
 assert SPEC is not None and SPEC.loader is not None
 HARNESS = importlib.util.module_from_spec(SPEC)
@@ -95,7 +95,7 @@ class LiveBaselineTests(unittest.TestCase):
                 "claim_boundary": "The article gives a reader-run method, not test results.",
                 "evidence_paths": [],
             },
-            "review_effort": dict(HARNESS.STANDARD_REVIEW_EFFORT),
+            "review_effort": dict(HARNESS.AUTHOR_QA_REVIEW_EFFORT),
         }]
         plan_path.write_text(json.dumps(plan), encoding="utf-8")
         synced = self.run_harness("sync-prewrite-plan", "--workspace", str(workspace))

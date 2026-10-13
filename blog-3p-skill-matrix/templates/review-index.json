@@ -53,5 +53,5 @@
     "article_package_sha256": null
   },
   "last_delta": null,
-  "note": "Hash-bound quality baseline. WQ is a same-author record, not an independent R approval; only a recorded WR escalation may use latest_full_review."
+  "note": "Hash-bound quality baseline. WQ is a same-author record, not an independent R approval. A WQ material-risk finding blocks hand-off and requests an owner decision; it never activates R by itself. Only an owner-confirmed WR route may use latest_full_review."
 }

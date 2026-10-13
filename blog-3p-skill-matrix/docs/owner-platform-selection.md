@@ -9,7 +9,7 @@ This lock prevents a workflow from treating its own candidate discovery, activat
 3. **Selection:** Which exact `{article_id, platform, account}` pair did the owner confirm from that proposal? Only a receipt in `owner-platform-selection.json` can answer this.
 4. **Transport eligibility:** Can that selected platform carry the frozen language and format? Only then may a read-only `locale_platform_validation` record answer this.
 
-G never answers audience fit, recommendation or selection: it creates/resumes the matching subagent, checks its source bounds, and obtains the owner's confirmation. Transport eligibility never answers audience fit, recommendation or selection. A login announcement, OAuth option, registration page, platform preflight, browser recovery result, public sample, prior campaign, or generated configuration is not an owner-selection source.
+G does not independently research audience fit, rank candidates or select a platform: it creates/resumes the matching subagent, checks source bounds and coverage of the owner's brand-display, CTA, article-count and delivery requirements, then obtains the owner's confirmation. The matching skill owns the decision criteria for audience/policy, brand display, actual article discovery and manual effort; its findings are reused in the existing pre-write plan, not a separate approval. A founder disclosure is not evidence of an available brand account. Transport eligibility never answers audience fit, recommendation or selection. A login announcement, OAuth option, registration page, platform preflight, browser recovery result, public sample, prior campaign, or generated configuration is not an owner-selection source.
 
 ## Required lock contents
 
@@ -23,6 +23,8 @@ Place each owner-originated input artifact inside `evidence/owner-selection/` an
 - `status: EXPLICITLY_CONFIRMED`.
 
 The lock must also reference the matching proposal's path, SHA-256, visible subagent task ID and researcher role. Its proposal row separates `primary_reader_languages` / `primary_reader_markets` / `primary_audience_evidence_path` from `transport_supported_content_languages` / `transport_evidence_path`. Set the lock's `status` to `OWNER_CONFIRMED`, calculate its SHA-256, and place that value in `campaign.json.platform_scope.selection_lock.sha256`. The campaign validator requires the lock hash, each source artifact hash, the proposal hash, the audience/transport distinction, and exact equality between proposal, receipts, `allowed_pairs`, and article assignments.
+
+Before this final lock, separately authorized [account preparation](account-preparation.md) may establish the specified account or minimal publishing space. Its authorization is not this selection lock, and its result cannot add `allowed_pairs`, change language/topic, or authorize W/R. The final owner-visible plan references actual readiness or the owner's explicit choice to proceed with an unresolved account. Passwords and session secrets never belong in either receipt.
 
 ## Required behavior when a receipt is absent
 

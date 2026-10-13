@@ -11,7 +11,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-HARNESS = ROOT / "skills/blog-3p-harness/scripts/harnessctl.py"
+HARNESS = ROOT / "skills/blog-harness/scripts/harnessctl.py"
 
 
 class EfficiencyTelemetryTests(unittest.TestCase):

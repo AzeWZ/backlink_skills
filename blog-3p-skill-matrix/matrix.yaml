@@ -1,6 +1,16 @@
 version: "0.13.0"
-name: "blog-3p-skill-matrix"
-execution_boundary: "NO_EXTERNAL_PLATFORM_WRITES"
+name: "blog-skill-matrix"
+execution_boundary: "HUMAN_CONTENT_RELEASE_WITH_OWNER_AUTHORIZED_ACCOUNT_PREPARATION"
+account_preparation:
+  mode: OWNER_AUTHORIZED_MINIMAL_SETUP
+  authorization: TARGET_IDENTITY_ACTION_BROWSER_RECEIPT_REQUIRED
+  service_role: CAMPAIGN_OPERATIONS_STEWARD
+  service_reuse: ONE_PER_CAMPAIGN
+  guide: docs/account-preparation.md
+  local_guard: skills/blog-harness/scripts/check_account_preparation.py
+  default_setup: EXISTING_BRAND_ASSETS_AND_PLATFORM_DEFAULTS_ONLY
+  content_writes: PROHIBITED
+  account_readiness_is_publication: false
 editorial_purpose_policy:
   mode: "READER_VALUE_FIRST"
   primary_purpose: "STANDALONE_ANSWER_TO_READER_TASK"
@@ -35,13 +45,13 @@ orchestration:
   topic_governance: G_FREEZES_TOPIC_SLOT_W_EVIDENCE_BOUNDARY
   topic_conflict: SAME_CAMPAIGN_G_EXCEPTION_DECISION_ONLY
   no_article_roles_before_prewrite_confirmation: true
-  model_first_execution: MODEL_CONTINUOUS_CREATION_WITH_DUAL_QUALITY_ROUTES
+  model_first_execution: MODEL_CONTINUOUS_CREATION_NORMAL_WQ_WITH_OWNER_EXPLICIT_WR
   default_review_route: AUTHOR_QA_INTEGRATED
   author_qa_protocol: CANDIDATE_LOCK_ADVERSARIAL_SELF_QA_TARGETED_REPAIR_FINAL_BIND
-  independent_review_route: INDEPENDENT_R_ESCALATION
-  separate_research_review: WR_RISK_TRIGGERED_ONLY
+  independent_review_route: OWNER_EXPLICIT_INDEPENDENT_R_ONLY
+  separate_research_review: OWNER_EXPLICIT_WR_ONLY
   final_independent_review: REQUIRED_ONLY_FOR_WR
-  wq_to_wr_downgrade: PROHIBITED
+  wq_unresolved_material_risk: OWNER_DECISION_REQUIRED
   gate_mode: CAMPAIGN_G_BATCH_CONTRACT_AND_EXCEPTION_ONLY
   execution_session: CONTINUOUS_CAMPAIGN_MAIN_SESSION
   execution_isolation: MAIN_SESSION_PATH_ISOLATED
@@ -67,45 +77,45 @@ orchestration:
   ordinary_turn_context: CONTRACT_INDEX_AND_CHANGED_ARTIFACTS_ONLY
   workflow_core: docs/workflow-core.md
   after_context_compaction: REREAD_WORKFLOW_CORE_THEN_CONTRACT_INDEX_AND_CHANGED_ARTIFACTS
-  full_history_rehydration: ON_HASH_DRIFT_UNRESOLVED_LINEAGE_AGENT_REPLACEMENT_OR_ESCALATION
+  full_history_rehydration: ON_HASH_DRIFT_UNRESOLVED_LINEAGE_AGENT_REPLACEMENT_OR_OWNER_DECISION
   execution_economy:
     role_context: FROZEN_CONTRACT_PLUS_ACTIVE_ARTIFACTS_PLUS_ON_DEMAND_COLD_HISTORY
     review_preflight: DETERMINISTIC_CHECK_REVIEW_READY_BEFORE_R
     author_qa: SAME_W_ADVERSARIAL_SELF_QA_AND_FINAL_BIND
-    independent_wr_review: INDEPENDENT_QUESTION_NARROW_EVIDENCE_VERDICT
+    independent_wr_review: OWNER_EXPLICIT_INDEPENDENT_QUESTION_NARROW_EVIDENCE_VERDICT
     material_claims: SELECTIVE_HIGH_IMPACT_OR_VOLATILE_SOURCE_CHECK
     normal_approved_report: EXCEPTION_AND_HASH_BUNDLE_ONLY
     extra_debate_or_pass_recitation: PROHIBITED
     model_routing: SHADOW_EVALUATION_BEFORE_ANY_LOWER_COST_ROUTE
     telemetry: OPTIONAL_OBSERVATION_ONLY_NOT_A_RELEASE_GATE
 skills:
-  - id: blog-3p-harness
+  - id: blog-harness
     role: campaign_harness
     requires: []
-  - id: blog-3p-platform-matching
+  - id: blog-platform-matching
     role: visible_platform_matching_researcher
-    requires: [blog-3p-harness]
+    requires: [blog-harness]
   - id: blog-writer-merged
     role: editorial_core_reference
     requires: []
     activation: REFERENCE_ONLY_NOT_AN_EXECUTABLE_ARTICLE_ROLE
-  - id: blog-3p-gate
+  - id: blog-gate
     role: gatekeeper_controller
-    requires: [blog-3p-harness]
-  - id: blog-3p-writer
+    requires: [blog-harness]
+  - id: blog-writer
     role: sole_executable_research_writer
-    requires: [blog-3p-harness, blog-3p-gate]
+    requires: [blog-harness, blog-gate]
     consults: [blog-writer-merged]
-  - id: blog-3p-review
+  - id: blog-review
     role: independent_reviewer
-    requires: [blog-3p-writer]
-  - id: blog-3p-human-handoff
+    requires: [blog-writer]
+  - id: blog-human-handoff
     role: package_compiler
-    requires: [blog-3p-gate]
+    requires: [blog-gate]
 forbidden_capabilities:
   - editor_input
-  - media_upload
+  - article_media_upload
   - publication
   - deletion
   - rollback
-  - credential_collection
+  - credential_persistence_or_delegation_to_writers_reviewers

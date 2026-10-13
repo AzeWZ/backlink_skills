@@ -1,1 +1,1 @@
-"""Blog 3P matrix regression tests."""
+"""Blog matrix regression tests."""

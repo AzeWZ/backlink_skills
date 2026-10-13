@@ -17,7 +17,7 @@ except ModuleNotFoundError:  # pragma: no cover
 
 
 ROOT = Path(__file__).resolve().parents[1]
-HARNESS_PATH = ROOT / "skills/blog-3p-harness/scripts/harnessctl.py"
+HARNESS_PATH = ROOT / "skills/blog-harness/scripts/harnessctl.py"
 SPEC = importlib.util.spec_from_file_location("blog_3p_harness_research_integrity", HARNESS_PATH)
 assert SPEC and SPEC.loader
 HARNESS = importlib.util.module_from_spec(SPEC)
@@ -115,7 +115,7 @@ class ResearchIntegrityTests(unittest.TestCase):
             "topic_slot": topic_slot(item),
             "frozen_delivery_mapping": mapping,
             "evidence_posture": method_posture(),
-            "review_effort": copy.deepcopy(HARNESS.STANDARD_REVIEW_EFFORT),
+            "review_effort": copy.deepcopy(HARNESS.AUTHOR_QA_REVIEW_EFFORT),
         }]
         plan_path.write_text(json.dumps(plan), encoding="utf-8")
         synced = self.run_harness("sync-prewrite-plan", "--workspace", str(workspace))
@@ -170,6 +170,46 @@ class ResearchIntegrityTests(unittest.TestCase):
             "cross_language_exception_required": True,
         })
         campaign_path.write_text(json.dumps(campaign), encoding="utf-8")
+
+    def test_optional_selection_notes_do_not_add_a_dispatch_gate(self) -> None:
+        """New observations preserve legacy proposals and existing owner locks."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir) / "campaign"
+            self.prepare(workspace)
+            (workspace / "requirements-contract.md").write_text(
+                "REQ-SCOPE-001: Owner-confirmed A1 scope; retain the required CTA.\n",
+                encoding="utf-8",
+            )
+            state_path = workspace / "state.json"
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+            state["orchestration"]["campaign_gatekeeper_agent_id"] = "TEST-G"
+            state_path.write_text(json.dumps(state), encoding="utf-8")
+            baseline = self.run_harness("dispatch-readiness", "--workspace", str(workspace))
+            self.assertEqual(baseline.returncode, 0, baseline.stdout + baseline.stderr)
+            self.assertIn("DISPATCH_READY", baseline.stdout)
+
+            proposal_path = workspace / "evidence/platform-matching/platform-matching-proposal.json"
+            proposal = json.loads(proposal_path.read_text(encoding="utf-8"))
+            proposal["proposals"][0]["selection_notes"] = {
+                "brand_identity": "Founder byline; no institutional account required by this fixture.",
+                "article_discovery_and_links": "Author-page entry; observed UGC link, no ranking promise.",
+                "manual_effort_and_risks": "Native image upload remains UNVERIFIED.",
+                "uncertainties": ["No account-level upload test performed."],
+                "evidence_refs": ["evidence/platform-matching/A1-eligibility.md"],
+            }
+            proposal_path.write_text(json.dumps(proposal), encoding="utf-8")
+            selection_path = workspace / "owner-platform-selection.json"
+            selection = json.loads(selection_path.read_text(encoding="utf-8"))
+            selection["matching_proposal"]["sha256"] = HARNESS.sha256_file(proposal_path)
+            selection_path.write_text(json.dumps(selection), encoding="utf-8")
+            campaign_path = workspace / "campaign.json"
+            campaign = json.loads(campaign_path.read_text(encoding="utf-8"))
+            campaign["platform_scope"]["selection_lock"]["sha256"] = HARNESS.sha256_file(selection_path)
+            campaign_path.write_text(json.dumps(campaign), encoding="utf-8")
+
+            checked = self.run_harness("dispatch-readiness", "--workspace", str(workspace))
+            self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
+            self.assertIn("DISPATCH_READY", checked.stdout)
 
     def test_transport_language_alone_cannot_pass_as_primary_audience_fit(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -293,7 +333,7 @@ class ResearchIntegrityTests(unittest.TestCase):
             self.assertEqual(built_index.returncode, 0, built_index.stdout + built_index.stderr)
             review_index = json.loads(index.read_text(encoding="utf-8"))
             self.assertEqual(review_index["latest_research_review"]["status"], "NOT_REQUIRED")
-            self.assertEqual(review_index["latest_research_review"]["coverage"], "INTEGRATED_IN_FULL_REVIEW")
+            self.assertEqual(review_index["latest_research_review"]["coverage"], "INTEGRATED_IN_AUTHOR_QA")
 
     def test_resolved_topic_conflict_requires_one_registered_g_task(self) -> None:
         item = article()

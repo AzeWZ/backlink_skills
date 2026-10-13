@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
-HARNESS_PATH = ROOT / "skills/blog-3p-harness/scripts/harnessctl.py"
+HARNESS_PATH = ROOT / "skills/blog-harness/scripts/harnessctl.py"
 SPEC = importlib.util.spec_from_file_location("blog_3p_harnessctl_dual_quality", HARNESS_PATH)
 assert SPEC is not None and SPEC.loader is not None
 HARNESS = importlib.util.module_from_spec(SPEC)
@@ -171,23 +171,39 @@ class WqWrDualRouteTests(unittest.TestCase):
             )
         self.assertTrue(any("latest_full_review status APPROVED" in error for error in errors), errors)
 
-    def test_wq_escalation_requires_a_recorded_trigger_and_real_r_approval(self) -> None:
+    def test_wq_material_risk_blocks_for_owner_without_auto_registering_r(self) -> None:
         index_path, _, _ = self.fixture()
         index = json.loads(index_path.read_text(encoding="utf-8"))
         index["route_resolution"] = {
             "planned_quality_mode": "WQ_SHARED_CONTEXT",
-            "effective_quality_mode": "WR_INDEPENDENT_ESCALATED",
-            "status": "WR_ESCALATED",
-            "escalation_trigger_ids": [],
+            "effective_quality_mode": "WQ_SHARED_CONTEXT",
+            "status": "OWNER_DECISION_REQUIRED",
+            "escalation_trigger_ids": ["FACT-001"],
         }
-        index["latest_author_qa"]["status"] = "AUTHOR_QA_ESCALATION_REQUIRED"
+        index["latest_author_qa"]["status"] = "AUTHOR_QA_OWNER_DECISION_REQUIRED"
         self.write_json("articles/A1/reviews/review-index.json", index)
         with patch.object(HARNESS, "article_context_errors", return_value=[]):
             errors = HARNESS.review_index_errors(
                 self.workspace, index_path, require_full_approved=True,
             )
-        self.assertTrue(any("stable escalation trigger ID" in error for error in errors), errors)
-        self.assertTrue(any("latest_full_review status APPROVED" in error for error in errors), errors)
+        self.assertTrue(any("explicit owner decision" in error for error in errors), errors)
+        self.assertFalse(any("latest_full_review status APPROVED" in error for error in errors), errors)
+        self.assertFalse(HARNESS.route_requires_independent_reviewer(
+            self.workspace, HARNESS.campaign("dual-quality"), self.article_id,
+            index["review_effort"],
+        ))
+
+    def test_wr_route_requires_an_explicit_owner_reason(self) -> None:
+        effort = copy.deepcopy(HARNESS.INDEPENDENT_R_REVIEW_EFFORT)
+        effort["reasons"] = ["HIGH_RISK_CLAIM"]
+        errors = HARNESS.model_first_review_effort_errors(effort)
+        self.assertTrue(any("OWNER_EXPLICIT_INDEPENDENT_REVIEW" in error for error in errors), errors)
+
+    def test_current_schema_rejects_legacy_independent_r_tiers(self) -> None:
+        errors = HARNESS.model_first_review_effort_errors(
+            copy.deepcopy(HARNESS.STANDARD_REVIEW_EFFORT),
+        )
+        self.assertTrue(any("schema 2.14" in error for error in errors), errors)
 
 
 if __name__ == "__main__":

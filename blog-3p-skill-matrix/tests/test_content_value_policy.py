@@ -13,7 +13,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-HARNESS_PATH = ROOT / "skills/blog-3p-harness/scripts/harnessctl.py"
+HARNESS_PATH = ROOT / "skills/blog-harness/scripts/harnessctl.py"
 SPEC = importlib.util.spec_from_file_location("blog_3p_harnessctl", HARNESS_PATH)
 assert SPEC is not None and SPEC.loader is not None
 HARNESS = importlib.util.module_from_spec(SPEC)

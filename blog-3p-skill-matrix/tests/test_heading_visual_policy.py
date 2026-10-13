@@ -12,8 +12,8 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BUILD = ROOT / "skills/blog-3p-human-handoff/scripts/build_visual_payload.py"
-VALIDATE = ROOT / "skills/blog-3p-human-handoff/scripts/validate_payload.py"
+BUILD = ROOT / "skills/blog-human-handoff/scripts/build_visual_payload.py"
+VALIDATE = ROOT / "skills/blog-human-handoff/scripts/validate_payload.py"
 
 
 class HeadingVisualPolicyTests(unittest.TestCase):

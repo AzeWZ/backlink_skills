@@ -18,7 +18,7 @@ except ModuleNotFoundError:  # pragma: no cover - discovery normally takes the f
 
 
 ROOT = Path(__file__).resolve().parents[1]
-HARNESS_PATH = ROOT / "skills/blog-3p-harness/scripts/harnessctl.py"
+HARNESS_PATH = ROOT / "skills/blog-harness/scripts/harnessctl.py"
 SPEC = importlib.util.spec_from_file_location("blog_3p_harnessctl", HARNESS_PATH)
 assert SPEC is not None and SPEC.loader is not None
 HARNESS = importlib.util.module_from_spec(SPEC)
@@ -106,7 +106,7 @@ class BatchGateControlPlaneTests(unittest.TestCase):
                 "claim_boundary": "The article gives a reader-run method, not test results.",
                 "evidence_paths": [],
             },
-            "review_effort": copy.deepcopy(HARNESS.STANDARD_REVIEW_EFFORT),
+            "review_effort": copy.deepcopy(HARNESS.INDEPENDENT_R_REVIEW_EFFORT),
         }]
         plan_path.write_text(json.dumps(plan), encoding="utf-8")
         synced = self.run_harness("sync-prewrite-plan", "--workspace", str(workspace))
@@ -251,9 +251,13 @@ class BatchGateControlPlaneTests(unittest.TestCase):
                 "article_package": {"path": "article-package.json", "sha256": HARNESS.sha256_file(package)},
                 "handoff_manifest": {"path": "handoff/handoff-manifest.json", "sha256": HARNESS.sha256_file(handoff)},
                 "requirements_traceability": {"path": "requirements-traceability.md", "sha256": HARNESS.sha256_file(trace)},
-                "full_review": {
-                    field: full_review[field]
-                    for field in ("status", "reviewer_agent_id", "report_path", "report_sha256")
+                "quality_receipt": {
+                    "quality_mode": "WR_INDEPENDENT",
+                    "status": full_review["status"],
+                    "agent_role": "ARTICLE_LANGUAGE_REVIEWER",
+                    "agent_id": full_review["reviewer_agent_id"],
+                    "receipt_path": full_review["report_path"],
+                    "receipt_sha256": full_review["report_sha256"],
                 },
                 "requirement_finding_ids": [],
             }],

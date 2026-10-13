@@ -18,8 +18,8 @@ except ModuleNotFoundError:  # pragma: no cover - discovery normally takes the f
 
 
 ROOT = Path(__file__).resolve().parents[1]
-HARNESS_PATH = ROOT / "skills/blog-3p-harness/scripts/harnessctl.py"
-BUILD_PAYLOAD = ROOT / "skills/blog-3p-human-handoff/scripts/build_visual_payload.py"
+HARNESS_PATH = ROOT / "skills/blog-harness/scripts/harnessctl.py"
+BUILD_PAYLOAD = ROOT / "skills/blog-human-handoff/scripts/build_visual_payload.py"
 SPEC = importlib.util.spec_from_file_location("blog_3p_harnessctl", HARNESS_PATH)
 assert SPEC is not None and SPEC.loader is not None
 HARNESS = importlib.util.module_from_spec(SPEC)
@@ -164,8 +164,11 @@ def record_research_and_full_approvals(
         },
     ]
     index = json.loads(index_path.read_text(encoding="utf-8"))
-    elevated = index.get("review_effort", {}).get("tier") == "ELEVATED_EARLY_CHALLENGE"
-    if elevated:
+    needs_early_research = (
+        index.get("review_effort", {}).get("research_gate")
+        == "SEPARATE_RESEARCH_REVIEW_REQUIRED"
+    )
+    if needs_early_research:
         state["orchestration"]["tasks"].insert(0, {
             "article_id": "A1", "role": "ARTICLE_LANGUAGE_REVIEWER", "agent_id": "R-A1",
             "workflow_stage": "RESEARCH_REVIEW", "result": "RESEARCH_APPROVED",
@@ -238,7 +241,7 @@ class ArtifactOptimizationTests(unittest.TestCase):
                 "claim_boundary": "The article gives a reader-run method, not test results.",
                 "evidence_paths": [],
             },
-            "review_effort": copy.deepcopy(HARNESS.STANDARD_REVIEW_EFFORT),
+            "review_effort": copy.deepcopy(HARNESS.INDEPENDENT_R_REVIEW_EFFORT),
         }]
         manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
         synced = self.run_harness("sync-prewrite-plan", "--workspace", str(workspace))
@@ -278,7 +281,7 @@ class ArtifactOptimizationTests(unittest.TestCase):
             built = self.run_harness("build-article-context", "--workspace", str(workspace), "--article-id", "A1", "--output", str(context))
             self.assertEqual(built.returncode, 0, built.stdout + built.stderr)
             context_data = json.loads(context.read_text(encoding="utf-8"))
-            self.assertEqual(context_data["review_effort"], HARNESS.STANDARD_REVIEW_EFFORT)
+            self.assertEqual(context_data["review_effort"], HARNESS.INDEPENDENT_R_REVIEW_EFFORT)
             self.assertEqual(context_data["rehydration_protocol"], HARNESS.MODEL_FIRST_REHYDRATION_PROTOCOL)
             self.assertNotIn(
                 "CONTEXT_COMPACTION",
@@ -553,9 +556,14 @@ class ArtifactOptimizationTests(unittest.TestCase):
             manifest_path = workspace / "prewrite-plan.json"
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             manifest["article_plans"][0]["review_effort"] = {
-                "tier": "ELEVATED_EARLY_CHALLENGE",
+                "tier": "INDEPENDENT_R_ESCALATION",
+                "quality_mode": "WR_INDEPENDENT",
                 "research_gate": "SEPARATE_RESEARCH_REVIEW_REQUIRED",
-                "reasons": ["VOLATILE_COMPARATIVE_CLAIM"],
+                "independent_reviewer_required": True,
+                "reasons": [
+                    "OWNER_EXPLICIT_INDEPENDENT_REVIEW",
+                    "VOLATILE_COMPARATIVE_CLAIM",
+                ],
             }
             manifest["status"] = "PENDING_OWNER_PREWRITE_PLAN_CONFIRMATION"
             manifest["owner_confirmation_id"] = None
