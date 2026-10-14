@@ -2,53 +2,146 @@
 
 [简体中文](README.zh-CN.md) · Version 0.14.0 · [MIT license](LICENSE)
 
-A compact workflow for useful, evidence-bounded SEO articles and human-native publishing. This revision reduces entrypoints and duplicate bookkeeping. It does not merge G with R, change model settings, or grant publication permission.
+**Start with a reader's question. Deliver a useful article, relevant images, and copy-ready publishing pages.**
 
-## Components
+A connected workflow for brand content, multilingual SEO, and third-party blog platforms. It covers topics, research, writing, images, quality checks, and human publishing handoff while reducing repeated research, reviews, and file maintenance. Content quality, owner requirements, and task cost matter together. Publication remains human-operated.
 
-| Component | Responsibility |
+[Core capabilities](#why-use-this-matrix) · [Deliverables](#what-you-get) · [Workflow](#workflow) · [Task cost](#how-task-cost-is-controlled) · [Getting started](#getting-started)
+
+## Why use this matrix?
+
+- **Write for a specific reader problem.** Shape the topic around who needs what answer, then deliver useful explanations, steps, or choices. Connect product recommendations to the actual task.
+- **Localize SEO with evidence.** Preserve required keyword meanings, prefer applicable brand wording, and check regional natural variants. Titles foreground distinct questions rather than sharing a repeated long prefix.
+- **Match both brand and platform.** Align voice and illustration style with brand references. Assess audience language and content fit from actual platform articles, strictly within the owner's supplied scope.
+- **Use images to explain.** Place body images next to the methods they clarify and provide a separate cover. Inspect actual final images, not merely file presence.
+- **Review the finished article.** An optional independent R examines the visual payload, real images, and material sources. Fix real issues without routinely turning a local change into a new full review.
+- **Make human publishing easier.** Prepare matching HTML/Markdown, Chinese insertion notes, visible localized alt, SEO fields, and an excerpt in a consistent order.
+- **Reduce workflow overhead.** Reuse shared evidence and a small agent pool; let code organize and count. Keep more work focused on the article instead of repeated handoffs.
+
+## What you get
+
+A page you can open, select, and copy into a rich-text editor—not a publishing handoff that requires reading HTML source.
+
+| Deliverable | Purpose |
 | --- | --- |
-| `blog-gate` | Consolidate research and the complete pre-write proposal, obtain owner confirmation, dispatch writers, verify requirement fidelity, and inspect public pages |
-| `blog-writer` | Continuously research, localize keywords, write, create images, build payloads, and perform one integrated quality check |
-| `blog-review` (optional) | Independent review only when explicitly selected by the owner |
-| Internal resources | Matching guidance belongs to G; editorial references, templates, and deterministic building/checking belong to W |
+| Visual HTML publishing page | Copy title and body separately, with exact-position Chinese insertion notes and visible localized alt |
+| Matching Markdown page | Use in a Markdown editor or as a readable fallback |
+| Numbered PNG/JPG/JPEG body images | Match adjacent sections and the confirmed quantity/coverage |
+| Separate cover image | Reflect the article and brand without replacing a body image |
+| SEO title, tags, and description | Retrieve individual fields at the bottom |
+| Excerpt | A separate reader-facing summary for platform cards or excerpt fields |
 
-Start with `$blog-gate`. WQ remains same-context author self-review. WR remains an owner-explicit independent R. Material risks do not automatically create a reviewer.
+The layout stays simple and consistent: **title → body and image notes → SEO fields → excerpt**. There are no copy buttons.
 
-## End-to-end flow
+One draft and one asset set support the delivery. Authors do not manually retell the same body, metadata, and image list in multiple files. Necessary source notes stay with the draft; passing review is brief and problems are recorded when they exist.
 
-Research and proposal → owner confirmation → W writes, prepares images, and builds/checks the final HTML and Markdown payloads → WQ author QA or an explicitly selected independent R reviews the final visual payload → G verifies original requirements and hands off the approved version → human publication → the same G checks public-page transport.
+## Workflow
 
-Sending payloads to R is internal review, not approval for human release. R inspects the rendered final page and actual final images, not only the draft or source code. Subsequent changes require affected-content and dependency verification; an earlier verdict does not silently approve a new build. This does not add another review round or version report.
+```text
+G: research and writing proposal
+        ↓
+Owner confirms the complete scope
+        ↓
+W: article, images, cover, and built/checked HTML + Markdown payloads
+        ↓
+Follow one confirmed quality route:
+  ├─ Default self-review: W checks the complete delivery in the same context
+  └─ Independent review: R checks the final payload, images, and sources
+        ↓ Quality passed
+G: verify original requirements and hand off to the publisher
+        ↓
+Human publishes and returns URL + accepted / needs-fix verdict
+        ↓ After human acceptance
+Same G: read-only public-page check
+        ↓ Check passed
+Complete: human acceptance + public verification
 
-Use a small pool of visible reusable writers for disjoint article paths. G owns shared requirements and progress. Do not create a new role for every stage or a worktree merely to fill capacity.
+Platform issue → Human repair → Accepted again → Same G checks affected items
+```
 
-## Minimal authoring and delivery
+Choose one quality route. Independent R replaces W's formal full self-review. Platform repairs do not restart the writing/review cycle.
 
-Keep one `task-plan.json` for shared requirements and per-article differences, plus the actual owner confirmation. The plan template is `templates/task-plan.json`. Proposed outlines and stylistic preferences do not become requirements automatically.
+| Role | Responsibility |
+| --- | --- |
+| G: `blog-gate` | Research coordination, requirement confirmation, writer dispatch, fidelity acceptance, and public QA |
+| W: `blog-writer` | Continuous research, keyword localization, writing, images, and payload production |
+| R: `blog-review` (optional) | Owner-selected independent review of the rendered final payload, images, cover, and material sources |
 
-Each author maintains `articles/<ID>/canonical/article.md` and image files. The Markdown includes SEO information, image placement/alt/captions, and necessary source notes. A deterministic tool generates paired `handoff/visual-payload.html` and `handoff/visual-payload.md`, with a small hidden consistency record; authors do not duplicate metadata or manually construct page shells.
+R receives built and mechanically checked HTML/Markdown payloads, not a draft waiting to be formatted. It checks reader value, facts, SEO and language, image accuracy, recommendations and links, and delivery usability. G accepts the reviewed version before it is handed to the publisher.
 
-The payload shows title, body with exact-position Chinese insertion notes and visible localized alt, then SEO title/tags/description and a separate Excerpt (article summary). New drafts provide the excerpt independently of the search description. There are no copy buttons. Images are numbered PNG/JPG/JPEG files. A separate cover is provided by default and does not replace a body image.
+### When a real issue is found
 
-One quality check covers the final article and actual final images. Fix real defects and inspect affected dependencies rather than routinely rereading everything. Passing output is short; record actual issues, not all-green reports. G verifies the owner requirements against delivery without repeating semantic review.
+```text
+Real issue
+   → Original W fixes and rebuilds the payload
+   → Same W or R checks changes and their direct dependencies
+   → Once resolved, return to G acceptance
+```
 
-After context compression, first reread the [short workflow](docs/workflow-core.md). Use the [authoring guide](skills/blog-writer/references/markdown-authoring.md) for formats and commands and the [editorial standard](skills/blog-writer/references/editorial-standard.md) when relevant.
+Unresolved material issues or scope changes require an owner decision, not approval. Article changes return to the original writer; platform transport repairs remain human-operated. An earlier verdict does not automatically cover a new build.
 
-## Requirements and evidence
+## How task cost is controlled
 
-Platforms must come from the owner's supplied and confirmed scope, with distinct per-article mappings. Establish the predominant language from actual homepage/trending/popular/featured articles; UI language, past accounts, and text transport are not audience evidence. Report conflicts rather than silently replacing platforms or forcing a mismatched language.
+Cost is one design priority, not the sole objective. Article count, research/localization difficulty, model choice, context, repairs, and image requirements determine actual usage. There is no promised fixed article price or unmeasured saving percentage.
 
-Preserve all owner-required keyword meanings per article. Prefer applicable localized brand wording, then regional natural variants, then documented translation fallback when checks find no consensus. Titles foreground distinct reader problems instead of repeating a long prefix. Literal matching applies only to explicitly locked wording; there are no density quotas. Optional English-only Google Trends is relative global context, not search volume or proof of local demand.
+| Route | Main model work per article | Trade-off |
+| --- | --- | --- |
+| Default: author self-review | W continuously prepares the article, images, and payloads, then checks them in the same context | Less independent handoff and repeated background loading |
+| Optional: independent review | W continuously produces the article; a reusable R reviews the final payload once | Additional independent reading and image inspection, with a non-author perspective |
 
-Articles must be independently useful. The required CTA remains a secondary, specific, transparent recommendation with its exact required anchor, URL and disclosure. Count target-site introduction, recommendation and source links together by occurrence; impose only owner-confirmed quantities. Multiple specified anchors are not prohibited categorically, but useful content and local checks cannot guarantee retention or search-policy acceptance. Inspect images for actual method accuracy and brand fit.
+Both routes share G's batch coordination and requirement acceptance. Public QA follows actual URL-return batches. Independent R replaces the author's formal full self-review rather than being added on top; these arrangements are not fixed API-call counts or token bills.
 
-## Runtime and compatibility
+Reuse applicable evidence, build two payloads from one Markdown draft, and use code for counting and consistency. Verify real changes, omit all-green reports, and stop repeated work while waiting for human input. Ordinary articles retain one full quality check; lower overhead does not mean dropped requirements.
 
-Python 3.9+. The Markdown route requires `markdown-it-py==3.0.0`; the dependency file remains at `skills/blog-human-handoff/scripts/requirements.txt`. New projects do not need the legacy harness initializer, dispatch gates, review indexes, or package acceptance chain.
+Research, writing, actual image inspection, and necessary repairs still consume model usage. Image generation may carry a separate charge; body images and the extra cover follow confirmed specifications. Tool calls, result reading, and human publishing also have costs. Parallelism reduces waiting but does not guarantee fewer tokens.
 
-The four retired directories retain internal code or legacy material, not discoverable skill entrypoints. Existing `campaign.json`/package/index projects retain their confirmed historical semantics and are not silently migrated. [README.legacy.md](README.legacy.md) contains conditional legacy commands, not requirements for new tasks.
+## Getting started
 
-Publication remains human-only. Registration/login and minimal setup need [separate account authorization](docs/account-preparation.md); they never permit article input, media upload, drafts, publication, deletion or fingerprint changes. Mechanical success is not a quality verdict or proof of owner identity. After human acceptance, the same G performs bounded public transport QA without reopening W/R; completion requires both acceptance and public verification.
+Once the matrix is connected to your local skill-capable tool, start with `$blog-gate`. Adapt this request to your task:
 
-There is no promised saving percentage. Evaluate ordinary-article runs and actual publisher rework.
+```text
+$blog-gate
+
+Brand and target page: <product-page URL>
+Candidate platforms: <my supplied list or file>
+Article count: 3, each on a different platform
+Keywords: <required meanings and supporting angles>
+CTA: <exact anchor, URL, and founder disclosure>
+Images: <body-image quantity, ratio, and style; plus a cover>
+
+First report each article's research, language/platform fit, and writing plan.
+Wait for my confirmation before writing.
+Use independent review: a reusable R reviews the finished visual payload
+and actual images. Fix real issues; do not routinely rereview the whole article.
+Deliver HTML, Markdown, images, SEO fields, and an excerpt for human publication.
+```
+
+Independent review is an explicit choice in this example, not an automatic extra stage. To use the default route, ask for author self-review without independent R.
+
+For initial setup, retain the complete `blog-skill-matrix` directory, including internal helpers, templates, and references, and register only the three skill entrypoints. Copying three `SKILL.md` files alone is insufficient. Follow your tool's local skill installation mechanism.
+
+## Content quality and task boundaries
+
+- **Evidence-based platform and language fit.** Research only owner-supplied candidates and obtain confirmation. Use actual homepage/trending/popular/featured articles to establish audience language—not UI language, old accounts, or text-display capability. Never silently add or replace platforms.
+- **SEO for a specific reader problem.** Preserve all required keyword meanings per article, foreground distinct questions in titles, and avoid a repeated long prefix. Use descriptive H2/H3 headings, not density quotas. Prefer applicable localized brand wording, then regional variants, then documented translation fallback. Optional Trends is not proof of search volume or local demand.
+- **Independent reader value.** Provide useful answers and supported facts. Keep product recommendations secondary while preserving the specified CTA, anchors, URLs, and disclosure. Respect owner-specified multiple links without inventing caps or promising ranking, indexing, or retention.
+- **Images that explain the method.** Inspect every final image and cover for adjacency, accurate method, example continuity, and brand fit. File existence and dimensions do not establish visual quality.
+- **Local delivery is not publication.** The matrix does not enter article editors, upload images, save drafts, or publish automatically. Account preparation needs [separate authorization](docs/account-preparation.md). Completion requires human acceptance and public verification.
+
+## Runtime and further reading
+
+Use an environment with local skills and file tools, plus Python 3.9+. Markdown building requires `markdown-it-py==3.0.0`; install it in an isolated environment where appropriate:
+
+```sh
+python -m pip install -r skills/blog-human-handoff/scripts/requirements.txt
+```
+
+Internal directory names remain for code compatibility, not as extra skill entrypoints. Existing `campaign.json`/package/index workspaces keep their historical contracts and are not automatically migrated.
+
+- [Short workflow](docs/workflow-core.md): task order and boundaries; reread after context compression.
+- [Authoring and tools](skills/blog-writer/references/markdown-authoring.md): draft format and build/check commands.
+- [Editorial standard](skills/blog-writer/references/editorial-standard.md): reader value, keywords, images, and recommendations.
+- [Platform matching](skills/blog-gate/references/platform-matching.md): audience and delivery fit within the supplied candidates.
+- [Historical compatibility](README.legacy.md): conditional legacy guidance, not a new-task prerequisite.
+
+[MIT license](LICENSE). Improvements grounded in actual articles, publisher rework, and reproducible issues are welcome. Unmeasured savings or ranking gains are not capability guarantees.
