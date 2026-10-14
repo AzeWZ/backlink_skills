@@ -1,14 +1,16 @@
-# Blog Skill Matrix
+# Scalable SEO Blog Workflow
 
 [简体中文](README.zh-CN.md) · Version 0.14.0 · [MIT license](LICENSE)
 
 **Start with a reader's question. Deliver a useful article, relevant images, and copy-ready publishing pages.**
 
-A connected workflow for brand content, multilingual SEO, and third-party blog platforms. It covers topics, research, writing, images, quality checks, and human publishing handoff while reducing repeated research, reviews, and file maintenance. Content quality, owner requirements, and task cost matter together. Publication remains human-operated.
+Scalable SEO Blog Workflow is an open-source AI skill bundle for research, localized writing, images, quality review, and human publishing handoff. It supports brand content, multilingual SEO, and third-party blog articles while keeping article quality, owner requirements, and task cost in view.
 
-[Core capabilities](#why-use-this-matrix) · [Deliverables](#what-you-get) · [Workflow](#workflow) · [Task cost](#how-task-cost-is-controlled) · [Getting started](#getting-started)
+Scalable means organizing multiple independent articles through reusable evidence and roles, with per-article checks and delivery. One blocked article does not have to hold up other confirmed work. It does not mean mass template generation, unlimited concurrency, or automatic publication. Single-article tasks are supported too.
 
-## Why use this matrix?
+[Core capabilities](#why-use-this-workflow) · [Deliverables](#what-you-get) · [Workflow](#workflow) · [Task cost](#how-task-cost-is-controlled) · [Getting started](#getting-started)
+
+## Why use this workflow?
 
 - **Write for a specific reader problem.** Shape the topic around who needs what answer, then deliver useful explanations, steps, or choices. Connect product recommendations to the actual task.
 - **Localize SEO with evidence.** Preserve required keyword meanings, prefer applicable brand wording, and check regional natural variants. Titles foreground distinct questions rather than sharing a repeated long prefix.
@@ -89,7 +91,7 @@ Cost is one design priority, not the sole objective. Article count, research/loc
 | Default: author self-review | W continuously prepares the article, images, and payloads, then checks them in the same context | Less independent handoff and repeated background loading |
 | Optional: independent review | W continuously produces the article; a reusable R reviews the final payload once | Additional independent reading and image inspection, with a non-author perspective |
 
-Both routes share G's batch coordination and requirement acceptance. Public QA follows actual URL-return batches. Independent R replaces the author's formal full self-review rather than being added on top; these arrangements are not fixed API-call counts or token bills.
+Both routes share G's shared coordination and requirement acceptance. Public QA follows actual URL-return batches. Independent R replaces the author's formal full self-review rather than being added on top; these arrangements are not fixed API-call counts or token bills.
 
 Reuse applicable evidence, build two payloads from one Markdown draft, and use code for counting and consistency. Verify real changes, omit all-green reports, and stop repeated work while waiting for human input. Ordinary articles retain one full quality check; lower overhead does not mean dropped requirements.
 
@@ -97,7 +99,7 @@ Research, writing, actual image inspection, and necessary repairs still consume 
 
 ## Getting started
 
-Once the matrix is connected to your local skill-capable tool, start with `$blog-gate`. Adapt this request to your task:
+Once this workflow is connected to your local skill-capable tool, start with `$blog-gate`. Adapt this request to your task:
 
 ```text
 $blog-gate
@@ -118,7 +120,7 @@ Deliver HTML, Markdown, images, SEO fields, and an excerpt for human publication
 
 Independent review is an explicit choice in this example, not an automatic extra stage. To use the default route, ask for author self-review without independent R.
 
-For initial setup, retain the complete `blog-skill-matrix` directory, including internal helpers, templates, and references, and register only the three skill entrypoints. Copying three `SKILL.md` files alone is insufficient. Follow your tool's local skill installation mechanism.
+The current directory remains `blog-skill-matrix`, and the entrypoint remains `$blog-gate`; this display-name update does not change existing usage. For initial setup, retain the complete directory, including internal helpers, templates, and references, and register only the three skill entrypoints. Copying three `SKILL.md` files alone is insufficient. Follow your tool's local skill installation mechanism.
 
 ## Content quality and task boundaries
 
@@ -126,7 +128,7 @@ For initial setup, retain the complete `blog-skill-matrix` directory, including 
 - **SEO for a specific reader problem.** Preserve all required keyword meanings per article, foreground distinct questions in titles, and avoid a repeated long prefix. Use descriptive H2/H3 headings, not density quotas. Prefer applicable localized brand wording, then regional variants, then documented translation fallback. Optional Trends is not proof of search volume or local demand.
 - **Independent reader value.** Provide useful answers and supported facts. Keep product recommendations secondary while preserving the specified CTA, anchors, URLs, and disclosure. Respect owner-specified multiple links without inventing caps or promising ranking, indexing, or retention.
 - **Images that explain the method.** Inspect every final image and cover for adjacency, accurate method, example continuity, and brand fit. File existence and dimensions do not establish visual quality.
-- **Local delivery is not publication.** The matrix does not enter article editors, upload images, save drafts, or publish automatically. Account preparation needs [separate authorization](docs/account-preparation.md). Completion requires human acceptance and public verification.
+- **Local delivery is not publication.** The workflow does not enter article editors, upload images, save drafts, or publish automatically. Account preparation needs [separate authorization](docs/account-preparation.md). Completion requires human acceptance and public verification.
 
 ## Runtime and further reading
 
