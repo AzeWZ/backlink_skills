@@ -1,6 +1,6 @@
 # Editorial standard
 
-Audit the canonical article before current-route quality binding: WQ author-QA or WR independent R.
+Independent R audits the final rendered payload, actual images and material sources after the build and mechanical check; W's ordinary editing is not a second formal review.
 
 | Surface | Pass condition |
 | --- | --- |
@@ -15,7 +15,7 @@ Audit the canonical article before current-route quality binding: WQ author-QA o
 | Recommendation integrity | The required frozen CTA is secondary and contextually relevant; its exact visible anchor text, product identity, destination and material claims have a traceable basis, any material relationship is clearly disclosed, and no unsupported reliability/ranking/test claim appears. |
 | Voice | Direct, specific and free of invented experience. Relate tone, technical depth, terminology and applicable illustration style to the user's brand guidance first, then the verified destination, while adapting to the target language and platform. Preserve editorial independence; do not copy sales language or imply official authorship. Check for a material mismatch between the article's implied audience, use case or benefit and the destination. Keep the exact required CTA and URL; adjust surrounding prose, not frozen positioning. |
 
-Only record actual `FINDING` or material `WARN`; do not produce a green `PASS` checklist. Reproducible issues get stable IDs. WQ fixes and reruns its adversarial author-QA, yielding `AUTHOR_QA_READY` with final hashes; an unresolved material issue becomes `OWNER_DECISION_REQUIRED` and blocks hand-off, not an automatic WR route. WR returns to independent R with the appropriate full/delta review only when the owner explicitly selected WR. G checks requirement fidelity and the route's truthful credential, not article semantics. Heading hierarchy is judged after `HUMAN_ACCEPTED` only from the rendered reader page; a public discrepancy does not reopen canonical content without an explicit owner correction request.
+Only record actual `FINDING` or material `WARN`; do not produce a green `PASS` checklist. Reproducible issues get stable IDs. New tasks require one independent R review. Original W fixes real issues; the same R checks changes and direct dependencies. Unresolved material issues require an owner decision and block hand-off; unavailable R never falls back to author approval. G checks requirement fidelity and the current independent verdict, not article semantics. Heading hierarchy is judged after `HUMAN_ACCEPTED` only from the rendered reader page; a public discrepancy does not reopen canonical content without an explicit owner correction request.
 
 ## 一轮质量核验，只修真实问题
 
@@ -40,7 +40,7 @@ G 对照用户原要求核最终交付和当前质量凭据，不只相信作者
 
 以上与正文、图片、推荐判断并入原有一轮质量核验，不新增外链风险报告或审稿轮次。
 
-把以下判断并入现有一轮写作自查；用户已选择独立审稿时，R 使用同一标准。不新增清单、报告、研究或审稿阶段，发现问题只修受影响的图片、段落与交付投影。
+把以下判断并入独立 R 的一轮完整审核；W 在创作中按同一标准正常编辑，不另做正式完整自查。不新增清单、报告、研究或审稿阶段，发现问题只修受影响的图片、段落与交付投影。
 
 - **图片真正讲对方法。** 看最终图片能否帮助读者理解相邻操作，而不只是与主题相关。延续同一示例时保留识别重点和必要构图；裁切图须来自同一画面，循环或衔接图须画清首尾与运动关系，流程顺序和图中文字须符合实际方法。不能用“仅示意”“比喻”或长图注掩盖换对象、错误术语或画错操作；图注用于补充条件，不是替图片纠错。真正在讲错误诊断时可保留明确标注的反例，但不能把普通教学图的意外错误包装成反例。局部问题优先局部改图，不重做无关图片或全文；修后同步准确 Alt、图注和载荷。
 - **限制说明不喧宾夺主。** 方法示例不是实测时，在合适位置集中说明其性质；不要每个提示词、步骤或推荐后重复“未实测、不保证、不能证明”。局部只保留会改变读者选择、输入或操作的限制，例如输入要求、音轨处理、可用规格、权利条件及不同工具的适用范围。把限制写成可执行提醒，少写审核口吻；不规定免责声明次数，也不能为简洁删掉用户要求的披露、掩盖重大未知项或保留无依据主张。读者最终应清楚知道能做什么、下一步怎么做，而不只知道作者没有保证什么。
@@ -62,7 +62,7 @@ G 对照用户原要求核最终交付和当前质量凭据，不只相信作者
 
 关键词记录应是自然表达而非搜索词串，保留语言/市场、来源与选择理由，并与已有主关键词字段一致。记录是共同研究依据，不是每篇标题必须照抄的前缀；不得为了让旧标题通过而事后缩短主词或删除保护含义。符合既有标题规则的句式调整不重开 G；修改已冻结的标题方式仍须用户确认。
 
-本地自查核标题文字与预期 H1 的全部保护含义，只有明确逐字要求才核完整短语。标题由平台单独输入时，不向正文额外插入重复 H1。发布后的视觉层级仍按公开读者页核验，不能用本地标签证明平台合格。
+独立 R 核本地标题文字与预期 H1 的全部保护含义，只有明确逐字要求才核完整短语。标题由平台单独输入时，不向正文额外插入重复 H1。发布后的视觉层级仍按公开读者页核验，不能用本地标签证明平台合格。
 
 ## 关键词与长尾问题怎样进入正文
 
@@ -79,4 +79,4 @@ G 对照用户原要求核最终交付和当前质量凭据，不只相信作者
 
 优先复用范围和时效仍适用的资料；只有答案不清或关键事实缺依据时才补充检索，不设固定样本数量、工具评分或额外研究报告。资料用于改进现有简报与正文，不是新的写前审批。参考方法：[Google 读者优先内容指南](https://developers.google.com/search/docs/fundamentals/creating-helpful-content)、[Ahrefs 搜索意图分析](https://ahrefs.com/blog/search-intent/)、[Clearscope 有用补充的思路](https://www.clearscope.io/blog/how-to-add-information-gain-to-content)。这些资料按需查阅，不要求每次写稿重新打开；工具建议和案例收益不能代替实际文章判断或成为排名承诺。
 
-品牌风格同样复用用户说明和已有目标页资料，不另扫全站或生成风格报告。缺少资料时采用清晰克制的文风，不声称已匹配；将点击前后明显的风格或预期落差作为原有一轮自查中的实际问题，不新增审稿阶段。品牌广告语不能替代事实依据，不能因追求风格一致而编造能力、效果或用户体验。
+品牌风格同样复用用户说明和已有目标页资料，不另扫全站或生成风格报告。缺少资料时采用清晰克制的文风，不声称已匹配；将点击前后明显的风格或预期落差作为独立 R 一轮审核中的实际问题，不新增审稿阶段。品牌广告语不能替代事实依据，不能因追求风格一致而编造能力、效果或用户体验。

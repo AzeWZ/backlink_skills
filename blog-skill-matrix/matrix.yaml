@@ -1,4 +1,4 @@
-version: "0.14.0"
+version: "0.15.0"
 name: "blog-skill-matrix"
 execution_boundary: "HUMAN_CONTENT_RELEASE_WITH_OWNER_AUTHORIZED_ACCOUNT_PREPARATION"
 account_preparation:
@@ -46,15 +46,15 @@ orchestration:
   topic_governance: G_FREEZES_TOPIC_SLOT_W_EVIDENCE_BOUNDARY
   topic_conflict: SAME_CAMPAIGN_G_EXCEPTION_DECISION_ONLY
   no_article_roles_before_prewrite_confirmation: true
-  model_first_execution: MODEL_CONTINUOUS_CREATION_NORMAL_WQ_WITH_OWNER_EXPLICIT_WR
-  default_review_route: AUTHOR_QA_INTEGRATED
-  author_qa_protocol: CANDIDATE_LOCK_ADVERSARIAL_SELF_QA_TARGETED_REPAIR_FINAL_BIND
-  independent_review_route: OWNER_EXPLICIT_INDEPENDENT_R_ONLY
+  model_first_execution: MODEL_CONTINUOUS_CREATION_THEN_REQUIRED_INDEPENDENT_R
+  default_review_route: WR
+  author_qa_protocol: ORDINARY_EDITING_AND_MECHANICAL_CHECK_ONLY
+  independent_review_route: REQUIRED_SOLE_QUALITY_ROUTE
   independent_review_input: FINAL_BUILT_AND_MECHANICALLY_CHECKED_VISUAL_PAYLOAD_PAIR_AND_IMAGES
   independent_review_timing: AFTER_PAYLOAD_BUILD_BEFORE_G_ACCEPTANCE_AND_OWNER_RELEASE_HANDOFF
-  separate_research_review: OWNER_EXPLICIT_WR_ONLY
-  final_independent_review: REQUIRED_ONLY_FOR_WR
-  wq_unresolved_material_risk: OWNER_DECISION_REQUIRED
+  separate_research_review: NOT_A_DEFAULT_STAGE
+  final_independent_review: REQUIRED_FOR_ALL_NEW_ARTICLES
+  unresolved_material_risk: OWNER_DECISION_REQUIRED
   gate_mode: CAMPAIGN_G_BATCH_CONTRACT_AND_EXCEPTION_ONLY
   execution_session: CONTINUOUS_CAMPAIGN_MAIN_SESSION
   execution_isolation: MAIN_SESSION_PATH_ISOLATED
@@ -68,7 +68,7 @@ orchestration:
     - OWNER_REQUESTED_GIT_ISOLATION
   fallback: NOT_APPLICABLE_MAIN_SESSION_PATH_ISOLATED
   silent_fallback: false
-  article_role_bundle: REUSABLE_WQ_WR_PLUS_SHARED_CAMPAIGN_G
+  article_role_bundle: REUSABLE_W_AND_INDEPENDENT_R_PLUS_SHARED_G
   article_artifact_root_role: ARTICLE_ARTIFACT_ROOT
   contract_acceptance: CAMPAIGN_G_BATCH_CONTRACT_ACCEPTANCE
   public_qa: REUSE_REGISTERED_CAMPAIGN_GATEKEEPER_BATCH_READONLY
@@ -84,8 +84,8 @@ orchestration:
   execution_economy:
     role_context: FROZEN_CONTRACT_PLUS_ACTIVE_ARTIFACTS_PLUS_ON_DEMAND_COLD_HISTORY
     review_preflight: ONE_LOCAL_BUILD_AND_INTEGRITY_CHECK
-    author_qa: SAME_W_ADVERSARIAL_SELF_QA_AND_FINAL_BIND
-    independent_wr_review: OWNER_EXPLICIT_INDEPENDENT_QUESTION_NARROW_EVIDENCE_VERDICT
+    author_qa: NO_ADDITIONAL_FORMAL_FULL_SELF_REVIEW
+    independent_wr_review: ONE_FULL_FINAL_PAYLOAD_REVIEW_THEN_SAME_R_TARGETED_RECHECK
     material_claims: SELECTIVE_HIGH_IMPACT_OR_VOLATILE_SOURCE_CHECK
     normal_approved_report: EXCEPTION_AND_HASH_BUNDLE_ONLY
     extra_debate_or_pass_recitation: PROHIBITED
@@ -102,7 +102,7 @@ skills:
     consults: [skills/blog-writer/references/editorial-standard.md]
   - id: blog-review
     role: independent_reviewer
-    activation: OWNER_EXPLICIT_WR_ONLY
+    activation: REQUIRED_AFTER_FINAL_PAYLOAD_BUILD
     requires: [blog-writer]
 internal_components:
   - path: skills/blog-harness
@@ -120,7 +120,7 @@ lightweight_release:
   outputs: [handoff/visual-payload.html, handoff/visual-payload.md]
   mechanical_result_is_quality_approval: false
   old_workspaces: NO_SILENT_MIGRATION
-  g_r_roles: UNCHANGED
+  g_r_roles: G_REQUIREMENT_ACCEPTANCE_AND_REQUIRED_INDEPENDENT_R
 forbidden_capabilities:
   - editor_input
   - article_media_upload

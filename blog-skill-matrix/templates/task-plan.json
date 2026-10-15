@@ -3,7 +3,7 @@
     "brand_url": "https://example.com/product",
     "brand_style": "Use the owner's supplied brand reference.",
     "focus_keyword": "example workflow",
-    "review_route": "WQ",
+    "review_route": "WR",
     "cta": {
       "mode": "SECONDARY_RECOMMENDATION",
       "product_name": "Example Product",

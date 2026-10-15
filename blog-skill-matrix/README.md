@@ -1,101 +1,105 @@
 # Scalable SEO Blog Workflow
 
-[简体中文](README.zh-CN.md) · Version 0.14.0 · [MIT license](LICENSE)
+[简体中文](README.zh-CN.md) · Version 0.15.0 · [MIT license](LICENSE)
 
 **Start with a reader's question. Deliver a useful article, relevant images, and copy-ready publishing pages.**
 
-Scalable SEO Blog Workflow is an open-source AI skill bundle for research, localized writing, images, quality review, and human publishing handoff. It supports brand content, multilingual SEO, and third-party blog articles while keeping article quality, owner requirements, and task cost in view.
+Scalable SEO Blog Workflow is an open-source AI skill bundle for research, localized writing, images, independent review and preparation for human publication. It supports brand content, multilingual SEO and articles published on third-party platforms.
 
-Scalable means organizing multiple independent articles through reusable evidence and roles, with per-article checks and delivery. One blocked article does not have to hold up other confirmed work. It does not mean mass template generation, unlimited concurrency, or automatic publication. Single-article tasks are supported too.
+Use it for a single article or multiple independent articles. Reuse relevant research, writers and reviewers, then check and deliver each article.
 
-[Core capabilities](#why-use-this-workflow) · [Deliverables](#what-you-get) · [Workflow](#workflow) · [Task cost](#how-task-cost-is-controlled) · [Getting started](#getting-started)
+[Core capabilities](#why-use-this-workflow) · [SEO value](#seo-value-of-the-delivered-article) · [Deliverables](#what-you-get) · [Workflow](#workflow) · [Task cost](#how-task-cost-is-controlled) · [Getting started](#getting-started)
 
 ## Why use this workflow?
 
+- **Deliver articles built for SEO and relevant backlinks.** Preserve keyword meanings and search intent, support links with useful content, and use language and platform fit to reduce avoidable removal risks and avoid link-farm-style content.
 - **Write for a specific reader problem.** Shape the topic around who needs what answer, then deliver useful explanations, steps, or choices. Connect product recommendations to the actual task.
-- **Localize SEO with evidence.** Preserve required keyword meanings, prefer applicable brand wording, and check regional natural variants. Titles foreground distinct questions rather than sharing a repeated long prefix.
+- **Localize SEO with evidence.** Preserve required keyword meanings, prefer applicable brand wording, and check regional natural variants. Each title highlights the question its article answers.
 - **Match both brand and platform.** Align voice and illustration style with brand references. Assess audience language and content fit from actual platform articles, strictly within the owner's supplied scope.
-- **Use images to explain.** Place body images next to the methods they clarify and provide a separate cover. Inspect actual final images, not merely file presence.
-- **Review the finished article.** An optional independent R examines the visual payload, real images, and material sources. Fix real issues without routinely turning a local change into a new full review.
-- **Make human publishing easier.** Prepare matching HTML/Markdown, Chinese insertion notes, visible localized alt, SEO fields, and an excerpt in a consistent order.
-- **Reduce workflow overhead.** Reuse shared evidence and a small agent pool; let code organize and count. Keep more work focused on the article instead of repeated handoffs.
+- **Use images to explain.** Place illustrations beside the steps or concepts they explain, inspect every final image, and provide a separate cover.
+- **Review the finished article.** Independent R examines the rendered page, real images and material sources, then checks affected changes after repairs.
+- **Make human publishing easier.** Generate HTML and Markdown pages from one article, with Chinese image-placement notes, visible image descriptions (alt text), SEO fields and an excerpt in a consistent order.
+- **Reduce repeated work.** Reuse research, writers and reviewers. Let code generate publishing pages, count links and check file consistency.
+
+## SEO value of the delivered article
+
+- **Align the title and body with one search goal.** Keep required keyword meanings in the title and answer related specific questions in the body. Different articles offer different answers around the same main keyword.
+- **Give links a useful context.** Provide useful content, explain which step the recommended product helps with, and retain the required call-to-action link (CTA) and relationship disclosure.
+- **Reduce avoidable removal risks.** Match language and format to actual platform articles, follow verified rules, disclose relationships and support capability or result claims with evidence.
+- **Avoid articles written merely to carry links.** Give each article useful content and a distinct focus. Keep links relevant to its question. Preserve requested anchors and links while checking applicable rules; count target-link occurrences across introductions, recommendations and sources together.
+- **Check consistency through to the public page.** Review titles, SEO fields, excerpts, links and images in the finished publishing page. After human publication, the coordinator checks that the public page preserves them.
+
+Links must follow [Google's spam policies](https://developers.google.com/search/docs/essentials/spam-policies) and each platform's current rules. Refer conflicting requirements to the owner. Search engines and platforms determine rankings, indexing and content removal.
 
 ## What you get
 
-A page you can open, select, and copy into a rich-text editor—not a publishing handoff that requires reading HTML source.
+Open the publishing page in a browser, select the content and copy it into a rich-text editor.
 
 | Deliverable | Purpose |
 | --- | --- |
-| Visual HTML publishing page | Copy title and body separately, with exact-position Chinese insertion notes and visible localized alt |
+| Visual HTML publishing page | Copy title and body separately, with Chinese image-placement notes and visible alt text in the article's language |
 | Matching Markdown page | Use in a Markdown editor or as a readable fallback |
-| Numbered PNG/JPG/JPEG body images | Match adjacent sections and the confirmed quantity/coverage |
+| Numbered PNG/JPG/JPEG body images | Match adjacent sections, with quantity and placement agreed in the plan |
 | Separate cover image | Reflect the article and brand without replacing a body image |
 | SEO title, tags, and description | Retrieve individual fields at the bottom |
 | Excerpt | A separate reader-facing summary for platform cards or excerpt fields |
 
-The layout stays simple and consistent: **title → body and image notes → SEO fields → excerpt**. There are no copy buttons.
+The page follows a consistent order: **title → body and image notes → SEO fields → excerpt**. Select the text to copy it.
 
-One draft and one asset set support the delivery. Authors do not manually retell the same body, metadata, and image list in multiple files. Necessary source notes stay with the draft; passing review is brief and problems are recorded when they exist.
+One draft and one asset set generate the delivery, with source notes kept alongside the article.
 
 ## Workflow
 
+G coordinates the task, W writes the article, and R reviews it independently.
+
 ```text
-G: research and writing proposal
+G: summarize research and propose a plan for each article
         ↓
-Owner confirms the complete scope
+Owner confirms the plan
         ↓
-W: article, images, cover, and built/checked HTML + Markdown payloads
+W: write, illustrate, and build/check HTML + Markdown publishing pages
         ↓
-Follow one confirmed quality route:
-  ├─ Default self-review: W checks the complete delivery in the same context
-  └─ Independent review: R checks the final payload, images, and sources
+R: one full review of the rendered page, images, cover and material sources
         ↓ Quality passed
 G: verify original requirements and hand off to the publisher
         ↓
-Human publishes and returns URL + accepted / needs-fix verdict
-        ↓ After human acceptance
-Same G: read-only public-page check
-        ↓ Check passed
-Complete: human acceptance + public verification
+Human publishes, returns the public URL and confirms acceptance or requests fixes
+        ↓
+Same G: compare the public page with the delivered article
+        ↓ Owner accepts and the check passes
+Task complete
 
-Platform issue → Human repair → Accepted again → Same G checks affected items
+Platform formatting or transfer issue → Human repair → Same G rechecks affected content
 ```
-
-Choose one quality route. Independent R replaces W's formal full self-review. Platform repairs do not restart the writing/review cycle.
 
 | Role | Responsibility |
 | --- | --- |
-| G: `blog-gate` | Research coordination, requirement confirmation, writer dispatch, fidelity acceptance, and public QA |
-| W: `blog-writer` | Continuous research, keyword localization, writing, images, and payload production |
-| R: `blog-review` (optional) | Owner-selected independent review of the rendered final payload, images, cover, and material sources |
+| G: `blog-gate` | Research coordination, plan confirmation, writer assignment, requirement acceptance and public-page checks |
+| W: `blog-writer` | Research, keyword localization, writing, images and publishing-page preparation |
+| R: `blog-review` | Independent review of the rendered publishing page, images, cover and material sources |
 
-R receives built and mechanically checked HTML/Markdown payloads, not a draft waiting to be formatted. It checks reader value, facts, SEO and language, image accuracy, recommendations and links, and delivery usability. G accepts the reviewed version before it is handed to the publisher.
-
-### When a real issue is found
+### When the reviewer finds a problem
 
 ```text
-Real issue
-   → Original W fixes and rebuilds the payload
-   → Same W or R checks changes and their direct dependencies
-   → Once resolved, return to G acceptance
+R identifies the problem and its location
+   → Original W fixes it and rebuilds the publishing pages
+   → Same R checks the changes and affected content
+   → G accepts the reviewed delivery
 ```
 
-Unresolved material issues or scope changes require an owner decision, not approval. Article changes return to the original writer; platform transport repairs remain human-operated. An earlier verdict does not automatically cover a new build.
+Refer unresolved material issues or changes to the confirmed plan to the owner. Record the review verdict for the revised version.
 
 ## How task cost is controlled
 
-Cost is one design priority, not the sole objective. Article count, research/localization difficulty, model choice, context, repairs, and image requirements determine actual usage. There is no promised fixed article price or unmeasured saving percentage.
+Costs come mainly from research, writing, images, review and repairs. Usage varies with article count, language difficulty, model and context.
 
-| Route | Main model work per article | Trade-off |
-| --- | --- | --- |
-| Default: author self-review | W continuously prepares the article, images, and payloads, then checks them in the same context | Less independent handoff and repeated background loading |
-| Optional: independent review | W continuously produces the article; a reusable R reviews the final payload once | Additional independent reading and image inspection, with a non-author perspective |
+- Reuse valid research and working agents to reduce repeated background reading.
+- Generate both publishing pages from one Markdown draft; use code for counts and consistency.
+- Review the complete article once, then recheck affected content after repairs. Keep approval notes brief.
+- Have G verify owner requirements and check public URLs in returned batches.
+- Save progress while waiting for human actions and resume when a reply arrives.
 
-Both routes share G's shared coordination and requirement acceptance. Public QA follows actual URL-return batches. Independent R replaces the author's formal full self-review rather than being added on top; these arrangements are not fixed API-call counts or token bills.
-
-Reuse applicable evidence, build two payloads from one Markdown draft, and use code for counting and consistency. Verify real changes, omit all-green reports, and stop repeated work while waiting for human input. Ordinary articles retain one full quality check; lower overhead does not mean dropped requirements.
-
-Research, writing, actual image inspection, and necessary repairs still consume model usage. Image generation may carry a separate charge; body images and the extra cover follow confirmed specifications. Tool calls, result reading, and human publishing also have costs. Parallelism reduces waiting but does not guarantee fewer tokens.
+Image generation may carry a separate charge. Parallel work can reduce waiting; report token usage from actual records.
 
 ## Getting started
 
@@ -113,22 +117,14 @@ Images: <body-image quantity, ratio, and style; plus a cover>
 
 First report each article's research, language/platform fit, and writing plan.
 Wait for my confirmation before writing.
-Use independent review: a reusable R reviews the finished visual payload
-and actual images. Fix real issues; do not routinely rereview the whole article.
 Deliver HTML, Markdown, images, SEO fields, and an excerpt for human publication.
 ```
 
-Independent review is an explicit choice in this example, not an automatic extra stage. To use the default route, ask for author self-review without independent R.
+Keep the complete `blog-skill-matrix` directory and register `blog-gate`, `blog-writer` and `blog-review` using your tool's skill installation mechanism.
 
-The current directory remains `blog-skill-matrix`, and the entrypoint remains `$blog-gate`; this display-name update does not change existing usage. For initial setup, retain the complete directory, including internal helpers, templates, and references, and register only the three skill entrypoints. Copying three `SKILL.md` files alone is insufficient. Follow your tool's local skill installation mechanism.
+## Task boundaries
 
-## Content quality and task boundaries
-
-- **Evidence-based platform and language fit.** Research only owner-supplied candidates and obtain confirmation. Use actual homepage/trending/popular/featured articles to establish audience language—not UI language, old accounts, or text-display capability. Never silently add or replace platforms.
-- **SEO for a specific reader problem.** Preserve all required keyword meanings per article, foreground distinct questions in titles, and avoid a repeated long prefix. Use descriptive H2/H3 headings, not density quotas. Prefer applicable localized brand wording, then regional variants, then documented translation fallback. Optional Trends is not proof of search volume or local demand.
-- **Independent reader value.** Provide useful answers and supported facts. Keep product recommendations secondary while preserving the specified CTA, anchors, URLs, and disclosure. Respect owner-specified multiple links without inventing caps or promising ranking, indexing, or retention.
-- **Images that explain the method.** Inspect every final image and cover for adjacency, accurate method, example continuity, and brand fit. File existence and dimensions do not establish visual quality.
-- **Local delivery is not publication.** The workflow does not enter article editors, upload images, save drafts, or publish automatically. Account preparation needs [separate authorization](docs/account-preparation.md). Completion requires human acceptance and public verification.
+Research stays within owner-supplied and confirmed platforms, with language fit based on actual platform articles. Writing and image generation begin after confirmation of the per-article plan. Humans handle publication; machines must not enter article editors, upload article images, save drafts, publish or delete. Account preparation requires [separate authorization](docs/account-preparation.md).
 
 ## Runtime and further reading
 
@@ -138,12 +134,12 @@ Use an environment with local skills and file tools, plus Python 3.9+. Markdown 
 python -m pip install -r skills/blog-human-handoff/scripts/requirements.txt
 ```
 
-Internal directory names remain for code compatibility, not as extra skill entrypoints. Existing `campaign.json`/package/index workspaces keep their historical contracts and are not automatically migrated.
+Install the internal tools with the complete directory. Existing workspaces with `campaign.json`, article packages or review indexes keep their original workflow.
 
 - [Short workflow](docs/workflow-core.md): task order and boundaries; reread after context compression.
 - [Authoring and tools](skills/blog-writer/references/markdown-authoring.md): draft format and build/check commands.
 - [Editorial standard](skills/blog-writer/references/editorial-standard.md): reader value, keywords, images, and recommendations.
 - [Platform matching](skills/blog-gate/references/platform-matching.md): audience and delivery fit within the supplied candidates.
-- [Historical compatibility](README.legacy.md): conditional legacy guidance, not a new-task prerequisite.
+- [Historical compatibility](README.legacy.md): reference for existing projects.
 
-[MIT license](LICENSE). Improvements grounded in actual articles, publisher rework, and reproducible issues are welcome. Unmeasured savings or ranking gains are not capability guarantees.
+[MIT license](LICENSE). Contributions grounded in real articles, publishing experience and reproducible issues are welcome.

@@ -1,4 +1,4 @@
 interface:
   display_name: "博客 独立审稿"
-  short_description: "独立审阅唯一基准稿并维护稳定问题项"
-  default_prompt: "使用 $blog-review 独立审阅一份博客文章交付包。"
+  short_description: "默认独立审核最终发布页、图片及来源，修复后仅复核相关改动"
+  default_prompt: "使用 $blog-review 独立审核最终可视化载荷、实际图片和重要来源，只指出真实问题。"

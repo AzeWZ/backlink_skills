@@ -100,9 +100,10 @@ def article_context(plan, identifier):
     for field in ("language", "reader_task"):
         if not isinstance(row.get(field), str) or not row[field].strip():
             raise ValueError("confirmed article needs " + field)
-    route = row.get("review_route", "WQ")
-    if route not in {"WQ", "WR"}:
-        raise ValueError("review route must be owner-selected WQ or WR")
+    route = row.get("review_route", "WR")
+    if route != "WR":
+        raise ValueError("new tasks require WR independent review; G must resolve the confirmed plan, not silently change its route")
+    row["review_route"] = route
     cta = row.get("cta", {})
     for field in ("anchor_text", "product_name", "product_destination_url", "relationship_disclosure"):
         if not isinstance(cta.get(field), str) or not cta[field].strip():
@@ -182,7 +183,7 @@ def build(plan_path, identifier, check=False, brief=False):
         "article_id": identifier, "purpose": "MECHANICAL_BUILD_NOT_QUALITY_APPROVAL",
         "inputs": inputs, "link_statistics": projection["link_statistics"],
         "outputs": {name: hashlib.sha256(value.encode("utf-8")).hexdigest() for name, value in outputs.items()},
-        "cover": visuals.get("cover_image"), "review_route": row.get("review_route", "WQ"),
+        "cover": visuals.get("cover_image"), "review_route": row["review_route"],
     }
     outputs["handoff/.build.json"] = dump(manifest)
     if check:
@@ -202,6 +203,8 @@ def build(plan_path, identifier, check=False, brief=False):
         "markdown": str(root / "handoff/visual-payload.md"),
         "body_images": len(visuals["assets"]),
         "cover": visuals.get("cover_image", {}).get("file"),
+        "review_route": row["review_route"],
+        "next_step": "INDEPENDENT_R_REVIEW_THEN_G_ACCEPTANCE",
     }
 
 

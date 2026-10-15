@@ -173,6 +173,33 @@ class LightweightMatrixTests(unittest.TestCase):
         (self.article / "article-package.json").write_text("{}")
         self.assertNotEqual(self.build().returncode, 0)
 
+    def test_missing_route_defaults_to_independent_r_without_fake_approval(self):
+        self.freeze()
+        brief = self.build("--brief")
+        self.assertEqual(brief.returncode, 0, brief.stderr)
+        self.assertEqual(json.loads(brief.stdout)["requirements"]["review_route"], "WR")
+        result = self.build()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["next_step"], "INDEPENDENT_R_REVIEW_THEN_G_ACCEPTANCE")
+        manifest = json.loads((self.article / "handoff/.build.json").read_text())
+        self.assertEqual(manifest["review_route"], "WR")
+        self.assertNotIn("approved", manifest)
+        self.assertIn("NOT_QUALITY_APPROVED", payload["result"])
+
+    def test_new_task_rejects_self_review_and_unknown_route_without_rewriting_plan(self):
+        for route in ("WQ", "unknown"):
+            with self.subTest(route=route):
+                self.plan["shared"]["review_route"] = route
+                self.write_plan()
+                self.freeze()
+                before = self.plan_path.read_bytes()
+                result = self.build()
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("require WR independent review", result.stderr)
+                self.assertEqual(before, self.plan_path.read_bytes())
+                self.assertFalse((self.article / "handoff").exists())
+
     def test_excerpt_is_separate_visible_and_identical_in_both_payloads(self):
         self.front["excerpt"] = 'A reader "summary" & a useful next step.'
         self.write_draft()
