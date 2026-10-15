@@ -120,7 +120,7 @@ Wait for my confirmation before writing.
 Deliver HTML, Markdown, images, SEO fields, and an excerpt for human publication.
 ```
 
-Keep the complete `blog-skill-matrix` directory and register `blog-gate`, `blog-writer` and `blog-review` using your tool's skill installation mechanism.
+Keep the complete `scalable-seo-blog-workflow` directory and register `blog-gate`, `blog-writer` and `blog-review` using your tool's skill installation mechanism.
 
 ## Task boundaries
 

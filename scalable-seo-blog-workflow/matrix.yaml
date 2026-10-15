@@ -1,5 +1,5 @@
 version: "0.15.0"
-name: "blog-skill-matrix"
+name: "scalable-seo-blog-workflow"
 execution_boundary: "HUMAN_CONTENT_RELEASE_WITH_OWNER_AUTHORIZED_ACCOUNT_PREPARATION"
 account_preparation:
   mode: OWNER_AUTHORIZED_MINIMAL_SETUP

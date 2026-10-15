@@ -119,7 +119,7 @@ CTA：<指定锚文本、链接和创始人关系披露>
 交付 HTML、Markdown、图片、SEO 信息与 Excerpt，由我人工发布。
 ```
 
-安装时保留完整 `blog-skill-matrix` 目录，按所用工具的安装规则注册 `blog-gate`、`blog-writer` 和 `blog-review` 三个入口。
+安装时保留完整 `scalable-seo-blog-workflow` 目录，按所用工具的安装规则注册 `blog-gate`、`blog-writer` 和 `blog-review` 三个入口。
 
 ## 任务边界
 
