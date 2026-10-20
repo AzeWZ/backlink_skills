@@ -1,6 +1,6 @@
 # Scalable SEO Blog Workflow
 
-[简体中文](README.zh-CN.md) · Version 0.16.4 · [MIT license](LICENSE)
+[简体中文](README.zh-CN.md) · Version 0.16.5 · [MIT license](LICENSE)
 
 **Start with a reader's question. Deliver a useful article, relevant images, and copy-ready publishing pages.**
 
@@ -126,7 +126,7 @@ Keep the complete `scalable-seo-blog-workflow` directory and register `blog-gate
 
 1. Pull or download this repository and keep the complete package, including `docs/`, `templates/` and internal tools.
 2. Point all three skill entries to their respective directories in the same package. For copied installations, update the complete bundle and the installed entries; for linked installations, update the linked bundle.
-3. Confirm `matrix.yaml` reports version `0.16.4` and the actually loaded G/W/R entries describe complete articles, public image URLs and image reference details outside the body. New and resumed tasks should reread those entries and the short workflow.
+3. Confirm `matrix.yaml` reports version `0.16.5` and the actually loaded G/W/R entries describe complete articles, public image URLs and image reference details outside the body. New and resumed tasks should reread those entries and the short workflow.
 
 This version delivers complete illustrated HTML/Markdown articles by default: HTML displays public images in place, and Markdown references the same URLs at the same positions. Placeholder cards are draft-only under `preview/`; operation notes and file details stay outside the article body.
 
