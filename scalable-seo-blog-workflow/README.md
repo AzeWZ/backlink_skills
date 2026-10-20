@@ -1,6 +1,6 @@
 # Scalable SEO Blog Workflow
 
-[简体中文](README.zh-CN.md) · Version 0.16.1 · [MIT license](LICENSE)
+[简体中文](README.zh-CN.md) · Version 0.16.2 · [MIT license](LICENSE)
 
 **Start with a reader's question. Deliver a useful article, relevant images, and copy-ready publishing pages.**
 
@@ -15,7 +15,7 @@ Use it for a single article or multiple independent articles. Reuse relevant res
 - **Deliver articles built for SEO and relevant backlinks.** Preserve keyword meanings and search intent, support links with useful content, and use language and platform fit to reduce avoidable removal risks and avoid link-farm-style content.
 - **Write for a specific reader problem.** Shape the topic around who needs what answer, then deliver useful explanations, steps, or choices. Connect product recommendations to the actual task.
 - **Localize SEO with evidence.** Preserve required keyword meanings, prefer applicable brand wording, and check regional natural variants. Each title highlights the question its article answers.
-- **Match both brand and platform.** Align voice and illustration style with brand references. Assess audience language and content fit from actual platform articles, strictly within the owner's supplied scope.
+- **Choose an angle for the destination's readers.** Use the relevant channel and representative articles to understand reader problems. Choose an angle within the owner's search goal and supported product capabilities, preserving brand style and allowing evidence-based new ideas.
 - **Use images to explain.** Place illustrations beside the steps or concepts they explain, inspect every final image, and provide a separate cover.
 - **Review the finished article.** Independent R examines the rendered page, real images and material sources, then checks affected changes after repairs.
 - **Deliver complete illustrated articles.** The model selects an image host and obtains public direct URLs, then builds complete HTML and Markdown pages from one draft, with clean article text, images and reader-facing captions. Image reference details stay outside the body, alongside separate SEO fields and an excerpt.
@@ -126,7 +126,7 @@ Keep the complete `scalable-seo-blog-workflow` directory and register `blog-gate
 
 1. Pull or download this repository and keep the complete package, including `docs/`, `templates/` and internal tools.
 2. Point all three skill entries to their respective directories in the same package. For copied installations, update the complete bundle and the installed entries; for linked installations, update the linked bundle.
-3. Confirm `matrix.yaml` reports version `0.16.1` and the actually loaded G/W/R entries describe complete articles, public image URLs and image reference details outside the body. New and resumed tasks should reread those entries and the short workflow.
+3. Confirm `matrix.yaml` reports version `0.16.2` and the actually loaded G/W/R entries describe complete articles, public image URLs and image reference details outside the body. New and resumed tasks should reread those entries and the short workflow.
 
 This version delivers complete illustrated HTML/Markdown articles by default: HTML displays public images in place, and Markdown references the same URLs at the same positions. Placeholder cards are draft-only under `preview/`; operation notes and file details stay outside the article body.
 
