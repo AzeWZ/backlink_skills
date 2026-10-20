@@ -1,4 +1,4 @@
-version: "0.16.2"
+version: "0.16.3"
 name: "scalable-seo-blog-workflow"
 execution_boundary: "HUMAN_CONTENT_RELEASE_WITH_OWNER_AUTHORIZED_ACCOUNT_PREPARATION"
 account_preparation:
