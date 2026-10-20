@@ -34,7 +34,7 @@
       "platform": "owner-confirmed-platform",
       "language": "en",
       "reader_task": "Explain the confirmed reader's specific problem and the useful answer this article provides.",
-      "angle": "A natural intersection of the owner's search goal, destination readers' needs and supported product capabilities; a creative starting point, not a locked title or outline.",
+      "angle": "A useful proposed topic and content direction within the owner's search goal, reader task and supported product capabilities; identify the product's concrete step. Titles, structure and examples remain creative starting points unless explicitly locked.",
       "platform_source": "Original owner candidate row/message.",
       "audience_evidence": "Relevant destination/channel, date and representative article links: who reads it, what they need, why this article helps; distinguish observation from inference."
     }
