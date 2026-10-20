@@ -647,6 +647,13 @@ def normalize_image_items(items: object, *, asset_root: Path) -> list[dict]:
 
 
 def html_image_card(item: dict) -> str:
+    if item.get("public_url"):
+        url = hosted_image_url(item["public_url"])
+        return (
+            '<figure data-image-ordinal="{ordinal:02d}"><img src="{url}" alt="{alt}" '
+            'style="max-width:100%;height:auto"><figcaption>{caption}</figcaption></figure>'
+        ).format(ordinal=item["ordinal"], url=html.escape(url, quote=True),
+                 alt=html.escape(item["alt"], quote=True), caption=html.escape(item["caption"]))
     ordinal = item["ordinal"]
     zone = item["coverage_zone"]
     return (
@@ -669,6 +676,10 @@ def html_image_card(item: dict) -> str:
 
 
 def markdown_image_card(item: dict) -> str:
+    if item.get("public_url"):
+        return "\n".join((
+            markdown_hosted_image(item), "", item["caption"],
+        ))
     return "\n".join((
         f"> 【图片 {item['ordinal']:02d}｜{image_zone_label(item['coverage_zone'])}｜在此处插入】",
         ">",
@@ -679,6 +690,22 @@ def markdown_image_card(item: dict) -> str:
         f"> 图注：{item['caption']}",
         f"> 相邻内容：{item['reader_job']}",
     ))
+
+
+def hosted_image_url(value):
+    spec = importlib.util.spec_from_file_location(
+        "hosted_image_url_checks",
+        Path(__file__).resolve().parents[2] / "blog-writer/scripts/public_images.py",
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.public_url(value)
+
+
+def markdown_hosted_image(item):
+    url = hosted_image_url(item["public_url"])
+    alt = item["alt"].replace("\\", "\\\\").replace("[", "\\[").replace("]", "\\]")
+    return f"![{alt}](<{url}>)"
 
 
 def replace_image_markers(body: str, items: list[dict], render_card) -> str:
@@ -838,7 +865,7 @@ def read_metadata(path: Path) -> tuple[str | None, str, str, str]:
 
 def render_payload_pair(
     *, title: str, body: str, image_items: list[dict], metadata_path: Path,
-    title_transfer_mode: str, markdown_body: str | None = None,
+    title_transfer_mode: str, markdown_body: str | None = None, cover_image: dict | None = None,
 ) -> tuple[str, str]:
     """Render the HTML primary and Markdown companion from the same inputs.
 
@@ -876,6 +903,36 @@ def render_payload_pair(
         title=title.strip(), body=markdown_with_cards.strip(), seo_title=seo_title,
         tags=tags, description=description, excerpt_markdown=excerpt_markdown,
     )
+    if cover_image and cover_image.get("public_url"):
+        url = hosted_image_url(cover_image["public_url"])
+        cover_html = (
+            '<section id="cover-image"><h2>独立封面 / Cover</h2>'
+            '<img src="{url}" alt="{alt}" style="max-width:100%;height:auto">'
+            '<p>文件：{file}</p><p>Alt：{alt}</p><p>图片 URL：{url}</p></section>'
+        ).format(url=html.escape(url, quote=True), alt=html.escape(cover_image["alt"], quote=True),
+                 file=html.escape(cover_image["file"]))
+        rendered = rendered.replace("</main>", cover_html + "</main>", 1)
+        rendered_markdown += "\n## 独立封面 / Cover\n\n" + markdown_hosted_image(cover_image) + (
+            "\n\n> 文件：" + cover_image["file"] + "\n> Alt：" + cover_image["alt"]
+            + "\n> 图片 URL：" + url + "\n")
+    hosted_items = [item for item in image_items if item.get("public_url")]
+    if hosted_items:
+        details_html = '<section id="image-reference"><h2>图片资料 / Image reference</h2>'
+        details_md = "\n## 图片资料 / Image reference\n"
+        for item in hosted_items:
+            details_html += (
+                '<p><strong>图片 {ordinal:02d}</strong><br>文件：{file}<br>Alt：{alt}'
+                '<br>图注：{caption}<br>图片 URL：{url}</p>'
+            ).format(ordinal=item["ordinal"], file=html.escape(item["file"]),
+                     alt=html.escape(item["alt"]), caption=html.escape(item["caption"]),
+                     url=html.escape(hosted_image_url(item["public_url"])))
+            details_md += (
+                f"\n### 图片 {item['ordinal']:02d}\n\n- 文件：{item['file']}\n"
+                f"- Alt：{item['alt']}\n- 图注：{item['caption']}\n"
+                f"- 图片 URL：{item['public_url']}\n"
+            )
+        rendered = rendered.replace("</main>", details_html + "</section></main>", 1)
+        rendered_markdown += details_md
     return rendered, rendered_markdown
 
 

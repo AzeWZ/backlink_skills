@@ -1,4 +1,4 @@
-version: "0.15.0"
+version: "0.16.1"
 name: "scalable-seo-blog-workflow"
 execution_boundary: "HUMAN_CONTENT_RELEASE_WITH_OWNER_AUTHORIZED_ACCOUNT_PREPARATION"
 account_preparation:
@@ -121,9 +121,20 @@ lightweight_release:
   mechanical_result_is_quality_approval: false
   old_workspaces: NO_SILENT_MIGRATION
   g_r_roles: G_REQUIREMENT_ACCEPTANCE_AND_REQUIRED_INDEPENDENT_R
+  image_hosting:
+    selection: MODEL_SELECTS_AVAILABLE_PUBLIC_IMAGE_HOST
+    uploads: ONLY_FINAL_INTENDED_PUBLIC_ARTICLE_IMAGES
+    extra_payment_or_account_access: OWNER_CONFIRMATION
+    verification: ANONYMOUS_HTTPS_DIRECT_IMAGE_MIME_AND_BYTES
+    payloads: COMPLETE_HTML_AND_MARKDOWN_WITH_PUBLIC_IMAGES
+    public_image_urls_default: REQUIRED_FOR_FINAL_EVEN_IF_PLAN_OMITS_FIELD
+    body_content: READER_TEXT_IMAGES_AND_CAPTIONS_ONLY
+    image_reference: OUTSIDE_ARTICLE_BODY
+    local_preview: EXPLICIT_FLAG_PREVIEW_DIRECTORY_NOT_FINAL_HANDOFF
+    guide: skills/blog-writer/references/image-hosting.md
 forbidden_capabilities:
   - editor_input
-  - article_media_upload
+  - blog_platform_media_upload
   - publication
   - deletion
   - rollback

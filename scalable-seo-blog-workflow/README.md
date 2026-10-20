@@ -1,6 +1,6 @@
 # Scalable SEO Blog Workflow
 
-[简体中文](README.zh-CN.md) · Version 0.15.0 · [MIT license](LICENSE)
+[简体中文](README.zh-CN.md) · Version 0.16.1 · [MIT license](LICENSE)
 
 **Start with a reader's question. Deliver a useful article, relevant images, and copy-ready publishing pages.**
 
@@ -18,7 +18,7 @@ Use it for a single article or multiple independent articles. Reuse relevant res
 - **Match both brand and platform.** Align voice and illustration style with brand references. Assess audience language and content fit from actual platform articles, strictly within the owner's supplied scope.
 - **Use images to explain.** Place illustrations beside the steps or concepts they explain, inspect every final image, and provide a separate cover.
 - **Review the finished article.** Independent R examines the rendered page, real images and material sources, then checks affected changes after repairs.
-- **Make human publishing easier.** Generate HTML and Markdown pages from one article, with Chinese image-placement notes, visible image descriptions (alt text), SEO fields and an excerpt in a consistent order.
+- **Deliver complete illustrated articles.** The model selects an image host and obtains public direct URLs, then builds complete HTML and Markdown pages from one draft, with clean article text, images and reader-facing captions. Image reference details stay outside the body, alongside separate SEO fields and an excerpt.
 - **Reduce repeated work.** Reuse research, writers and reviewers. Let code generate publishing pages, count links and check file consistency.
 
 ## SEO value of the delivered article
@@ -37,14 +37,14 @@ Open the publishing page in a browser, select the content and copy it into a ric
 
 | Deliverable | Purpose |
 | --- | --- |
-| Visual HTML publishing page | Copy title and body separately, with Chinese image-placement notes and visible alt text in the article's language |
-| Matching Markdown page | Use in a Markdown editor or as a readable fallback |
+| Complete illustrated HTML page | Full article with public images at their exact positions; copy a clean title and body, with operation notes outside the article |
+| Complete illustrated Markdown page | Full article with public image URLs, alt text and captions for Markdown editors |
 | Numbered PNG/JPG/JPEG body images | Match adjacent sections, with quantity and placement agreed in the plan |
-| Separate cover image | Reflect the article and brand without replacing a body image |
+| Separate cover image | Local file and public URL listed at the end, separate from body images |
 | SEO title, tags, and description | Retrieve individual fields at the bottom |
 | Excerpt | A separate reader-facing summary for platform cards or excerpt fields |
 
-The page follows a consistent order: **title → body and image notes → SEO fields → excerpt**. Select the text to copy it.
+The page follows a consistent order: **title → complete illustrated body → SEO fields → excerpt**. Select the text to copy it.
 
 One draft and one asset set generate the delivery, with source notes kept alongside the article.
 
@@ -57,7 +57,7 @@ G: summarize research and propose a plan for each article
         ↓
 Owner confirms the plan
         ↓
-W: write, illustrate, and build/check HTML + Markdown publishing pages
+W: write, illustrate, host images, verify URLs and build complete illustrated pages
         ↓
 R: one full review of the rendered page, images, cover and material sources
         ↓ Quality passed
@@ -122,9 +122,17 @@ Deliver HTML, Markdown, images, SEO fields, and an excerpt for human publication
 
 Keep the complete `scalable-seo-blog-workflow` directory and register `blog-gate`, `blog-writer` and `blog-review` using your tool's skill installation mechanism.
 
+### Installation and updates
+
+1. Pull or download this repository and keep the complete package, including `docs/`, `templates/` and internal tools.
+2. Point all three skill entries to their respective directories in the same package. For copied installations, update the complete bundle and the installed entries; for linked installations, update the linked bundle.
+3. Confirm `matrix.yaml` reports version `0.16.1` and the actually loaded G/W/R entries describe complete articles, public image URLs and image reference details outside the body. New and resumed tasks should reread those entries and the short workflow.
+
+This version delivers complete illustrated HTML/Markdown articles by default: HTML displays public images in place, and Markdown references the same URLs at the same positions. Placeholder cards are draft-only under `preview/`; operation notes and file details stay outside the article body.
+
 ## Task boundaries
 
-Research stays within owner-supplied and confirmed platforms, with language fit based on actual platform articles. Writing and image generation begin after confirmation of the per-article plan. Humans handle publication; machines must not enter article editors, upload article images, save drafts, publish or delete. Account preparation requires [separate authorization](docs/account-preparation.md).
+Research stays within owner-supplied and confirmed platforms, with language fit based on actual platform articles. Writing and image generation begin after confirmation of the per-article plan. Humans handle publication; machines must not enter article editors, upload images to the target blog platform, save drafts, publish or delete. The model may upload intended-public article images to an image host under the [image-hosting rules](skills/blog-writer/references/image-hosting.md); extra payment or account access requires owner confirmation. Account preparation requires [separate authorization](docs/account-preparation.md).
 
 ## Runtime and further reading
 
@@ -137,6 +145,7 @@ python -m pip install -r skills/blog-human-handoff/scripts/requirements.txt
 Install the internal tools with the complete directory. Existing workspaces with `campaign.json`, article packages or review indexes keep their original workflow.
 
 - [Short workflow](docs/workflow-core.md): task order and boundaries; reread after context compression.
+- [Image hosting](skills/blog-writer/references/image-hosting.md): host selection, public URLs and complete illustrated publishing pages.
 - [Authoring and tools](skills/blog-writer/references/markdown-authoring.md): draft format and build/check commands.
 - [Editorial standard](skills/blog-writer/references/editorial-standard.md): reader value, keywords, images, and recommendations.
 - [Platform matching](skills/blog-gate/references/platform-matching.md): audience and delivery fit within the supplied candidates.

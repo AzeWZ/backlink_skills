@@ -117,8 +117,11 @@ def article_context(plan, identifier):
     for field in ("body_image_count", "minimum_body_images"):
         if field in requirements and (type(requirements[field]) is not int or requirements[field] < 0):
             errors.append(field + " must be a confirmed non-negative integer")
-    if "cover_required" in requirements and type(requirements["cover_required"]) is not bool:
-        errors.append("cover_required must be a boolean")
+    for field in ("cover_required", "public_image_urls_required"):
+        if field in requirements and type(requirements[field]) is not bool:
+            errors.append(field + " must be a boolean")
+    requirements.setdefault("public_image_urls_required", True)
+    row["delivery_requirements"] = requirements
     if errors:
         raise ValueError("; ".join(errors))
     return {
@@ -134,12 +137,16 @@ def article_context(plan, identifier):
     }
 
 
-def build(plan_path, identifier, check=False, brief=False):
+def build(plan_path, identifier, check=False, brief=False, verify_images=False, local_preview=False):
     plan = confirmed_plan(plan_path)
     context = article_context(plan, identifier)
     if brief:
         return {"article_id": identifier, "requirements": context["frozen_article"],
-            "note": "Original owner requirements; not a quality verdict."}
+            "note": "Confirmed requirements and final-delivery defaults; not a quality verdict."}
+    if local_preview and verify_images:
+        raise ValueError("--local-preview is a draft; verify hosted images in the final build")
+    if not local_preview and not context["delivery_requirements"]["public_image_urls_required"]:
+        raise ValueError("final delivery requires public image URLs; resolve the plan or use --local-preview for a draft")
     root = plan_path.parent / "articles" / identifier
     if (root / "article-package.json").exists() or (root / "context/article-contract.json").exists():
         raise ValueError("existing indexed project: preserve its legacy route; do not silently migrate")
@@ -162,6 +169,19 @@ def build(plan_path, identifier, check=False, brief=False):
         raise ValueError("title differs from the owner-locked title")
     C = module("lean_payload_template", MATRIX / "skills/blog-human-handoff/scripts/build_visual_payload.py")
     visuals = json.loads(projection["visual_manifest"])
+    public_images = None
+    if not local_preview:
+        H = module("public_image_checks", Path(__file__).with_name("public_images.py"))
+        records = H.image_records(visuals)
+        previous = root / "handoff/.build.json"
+        if verify_images:
+            if check:
+                raise ValueError("--verify-images rebuilds; use --check separately")
+            public_images = H.verify(records)
+        elif previous.is_file():
+            public_images = json.loads(previous.read_text(encoding="utf-8")).get("public_images")
+        if not H.matching_receipt(public_images, records):
+            raise ValueError("new or changed public image URLs need --verify-images before delivery")
     mode = row.get("title_transfer_mode", "SEPARATE_TITLE_FIELD")
     if mode not in {"SEPARATE_TITLE_FIELD", "TITLE_IN_BODY"}:
         raise ValueError("unsupported title transfer mode")
@@ -172,20 +192,28 @@ def build(plan_path, identifier, check=False, brief=False):
             title=projection["title"], body=projection["canonical"],
             image_items=visuals["assets"], metadata_path=metadata_path,
             title_transfer_mode=mode, markdown_body=projection["markdown_body"],
+            cover_image=visuals.get("cover_image"),
         )
-    outputs = {"handoff/visual-payload.html": html, "handoff/visual-payload.md": markdown}
+    output_dir = "preview" if local_preview else "handoff"
+    if local_preview:
+        html = html.replace('<h1 id="blog-title">', '<p>本地草稿预览 / Local draft preview</p><h1 id="blog-title">', 1)
+        markdown = "> 本地草稿预览 / Local draft preview\n\n" + markdown
+    outputs = {output_dir + "/visual-payload.html": html, output_dir + "/visual-payload.md": markdown}
     inputs = {"task_plan_sha256": digest(plan_path), "article_sha256": digest(source),
         "images": {a["file"]: a["sha256"] for a in visuals["assets"]}}
     if "cover_image" in visuals:
         cover = visuals["cover_image"]
         inputs["images"][cover["file"]] = cover["sha256"]
     manifest = {
-        "article_id": identifier, "purpose": "MECHANICAL_BUILD_NOT_QUALITY_APPROVAL",
+        "article_id": identifier,
+        "purpose": "LOCAL_DRAFT_PREVIEW" if local_preview else "MECHANICAL_BUILD_NOT_QUALITY_APPROVAL",
         "inputs": inputs, "link_statistics": projection["link_statistics"],
         "outputs": {name: hashlib.sha256(value.encode("utf-8")).hexdigest() for name, value in outputs.items()},
         "cover": visuals.get("cover_image"), "review_route": row["review_route"],
     }
-    outputs["handoff/.build.json"] = dump(manifest)
+    if public_images is not None:
+        manifest["public_images"] = public_images
+    outputs[output_dir + "/.build.json"] = dump(manifest)
     if check:
         for name, expected in outputs.items():
             target = root / name
@@ -197,14 +225,16 @@ def build(plan_path, identifier, check=False, brief=False):
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(text, encoding="utf-8")
     return {
-        "result": "MECHANICAL_CHECK_PASSED_NOT_QUALITY_APPROVAL" if check else "BUILT_NOT_QUALITY_APPROVED",
+        "result": ("LOCAL_PREVIEW_NOT_QUALITY_APPROVED" if local_preview else
+                   "MECHANICAL_CHECK_PASSED_NOT_QUALITY_APPROVAL" if check else "BUILT_NOT_QUALITY_APPROVED"),
         "article_id": identifier, "link_statistics": projection["link_statistics"],
-        "html": str(root / "handoff/visual-payload.html"),
-        "markdown": str(root / "handoff/visual-payload.md"),
+        "html": str(root / output_dir / "visual-payload.html"),
+        "markdown": str(root / output_dir / "visual-payload.md"),
         "body_images": len(visuals["assets"]),
         "cover": visuals.get("cover_image", {}).get("file"),
         "review_route": row["review_route"],
-        "next_step": "INDEPENDENT_R_REVIEW_THEN_G_ACCEPTANCE",
+        "next_step": ("FINISH_PUBLIC_IMAGE_DELIVERY" if local_preview else
+                      "INDEPENDENT_R_REVIEW_THEN_G_ACCEPTANCE"),
     }
 
 
@@ -217,17 +247,24 @@ def main():
     parser.add_argument("--source")
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--brief", action="store_true")
+    parser.add_argument("--local-preview", action="store_true",
+                        help="Build only a draft under preview/; never a final handoff.")
+    parser.add_argument("--verify-images", action="store_true",
+                        help="Anonymously verify hosted images and build the complete HTML/Markdown pair.")
     args = parser.parse_args()
     try:
         plan_path = args.plan.resolve()
         if args.freeze:
-            if not args.receipt_file or not args.source or args.check or args.brief:
+            if not args.receipt_file or not args.source or args.check or args.brief or args.verify_images or args.local_preview:
                 raise ValueError("G binds an actual owner reply using --receipt-file and --source")
             result = freeze(plan_path, args.receipt_file, args.source)
         else:
             if not args.article_id:
                 raise ValueError("--article-id is required")
-            result = build(plan_path, args.article_id, check=args.check, brief=args.brief)
+            if args.brief and args.verify_images:
+                raise ValueError("--brief cannot verify images")
+            result = build(plan_path, args.article_id, check=args.check, brief=args.brief,
+                           verify_images=args.verify_images, local_preview=args.local_preview)
         print(dump(result), end="")
         return 0
     except (ValueError, OSError, KeyError, TypeError) as exc:

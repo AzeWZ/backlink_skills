@@ -5,11 +5,11 @@
   "description": "Summarize the useful answer and its scope for search results.",
   "excerpt": "Write a short reader-facing summary for the platform article card or introduction.",
   "images": [
-    {"file": "images/01-lead-topic.png", "alt": "Localized accurate alt", "caption": "Reader-facing caption"},
-    {"file": "images/02-middle-topic.png", "alt": "Localized accurate alt", "caption": "Reader-facing caption"},
-    {"file": "images/03-closing-topic.png", "alt": "Localized accurate alt", "caption": "Reader-facing caption"}
+    {"file": "images/01-lead-topic.png", "public_url": "https://your-public-image-host.example/01-lead-topic.png", "alt": "Localized accurate alt", "caption": "Reader-facing caption"},
+    {"file": "images/02-middle-topic.png", "public_url": "https://your-public-image-host.example/02-middle-topic.png", "alt": "Localized accurate alt", "caption": "Reader-facing caption"},
+    {"file": "images/03-closing-topic.png", "public_url": "https://your-public-image-host.example/03-closing-topic.png", "alt": "Localized accurate alt", "caption": "Reader-facing caption"}
   ],
-  "cover": {"file": "images/00-cover-topic.png", "alt": "Localized cover alt"},
+  "cover": {"file": "images/00-cover-topic.png", "public_url": "https://your-public-image-host.example/00-cover-topic.png", "alt": "Localized cover alt"},
   "research": {
     "keyword_basis": "CURRENT_BRAND_SITE",
     "keyword_refs": ["PRODUCT"],

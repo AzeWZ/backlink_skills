@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from tests.test_lean_authoring import png
 
@@ -80,21 +81,22 @@ class LightweightMatrixTests(unittest.TestCase):
             "--source", "test-owner-message")
         self.assertEqual(result.returncode, 0, result.stderr)
 
-    def build(self, *extra):
-        return self.run_script("--article-id", "A01", *extra)
+    def build(self, *extra, final=False):
+        flags = () if final or "--brief" in extra else ("--local-preview",)
+        return self.run_script("--article-id", "A01", *extra, *flags)
 
     def test_build_and_check_without_campaign_or_review_state(self):
         self.freeze()
         result = self.build()
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("BUILT_NOT_QUALITY_APPROVED", result.stdout)
+        self.assertIn("LOCAL_PREVIEW_NOT_QUALITY_APPROVED", result.stdout)
         self.assertEqual(self.build("--check").returncode, 0)
         self.assertFalse((self.workspace / "campaign.json").exists())
         self.assertFalse((self.workspace / "state.json").exists())
         self.assertFalse((self.article / "reviews").exists())
         self.assertFalse((self.article / "article-package.json").exists())
-        html = (self.article / "handoff/visual-payload.html").read_text()
-        markdown = (self.article / "handoff/visual-payload.md").read_text()
+        html = (self.article / "preview/visual-payload.html").read_text()
+        markdown = (self.article / "preview/visual-payload.md").read_text()
         self.assertIn('lang="en"', html)
         self.assertIn("【图片 02", html)
         self.assertIn("【图片 02", markdown)
@@ -153,7 +155,7 @@ class LightweightMatrixTests(unittest.TestCase):
     def test_current_pair_and_image_change_requires_rebuild(self):
         self.freeze()
         self.assertEqual(self.build().returncode, 0)
-        markdown = self.article / "handoff/visual-payload.md"
+        markdown = self.article / "preview/visual-payload.md"
         markdown.write_text(markdown.read_text().replace("Try Example Product", "Changed CTA"))
         self.assertNotEqual(self.build("--check").returncode, 0)
         self.assertEqual(self.build().returncode, 0)
@@ -167,7 +169,7 @@ class LightweightMatrixTests(unittest.TestCase):
         self.write_plan()
         self.freeze()
         self.assertEqual(self.build().returncode, 0)
-        manifest = json.loads((self.article / "handoff/.build.json").read_text())
+        manifest = json.loads((self.article / "preview/.build.json").read_text())
         self.assertEqual(manifest["review_route"], "WR")
         self.assertNotIn("approved", manifest)
         (self.article / "article-package.json").write_text("{}")
@@ -181,8 +183,8 @@ class LightweightMatrixTests(unittest.TestCase):
         result = self.build()
         self.assertEqual(result.returncode, 0, result.stderr)
         payload = json.loads(result.stdout)
-        self.assertEqual(payload["next_step"], "INDEPENDENT_R_REVIEW_THEN_G_ACCEPTANCE")
-        manifest = json.loads((self.article / "handoff/.build.json").read_text())
+        self.assertEqual(payload["next_step"], "FINISH_PUBLIC_IMAGE_DELIVERY")
+        manifest = json.loads((self.article / "preview/.build.json").read_text())
         self.assertEqual(manifest["review_route"], "WR")
         self.assertNotIn("approved", manifest)
         self.assertIn("NOT_QUALITY_APPROVED", payload["result"])
@@ -205,8 +207,8 @@ class LightweightMatrixTests(unittest.TestCase):
         self.write_draft()
         self.freeze()
         self.assertEqual(self.build().returncode, 0)
-        html = (self.article / "handoff/visual-payload.html").read_text()
-        markdown = (self.article / "handoff/visual-payload.md").read_text()
+        html = (self.article / "preview/visual-payload.html").read_text()
+        markdown = (self.article / "preview/visual-payload.md").read_text()
         self.assertIn('id="article-excerpt"', html)
         self.assertIn('A reader &quot;summary&quot; &amp; a useful next step.', html)
         self.assertIn('- Excerpt（文章摘要）：' + self.front["excerpt"], markdown)
@@ -236,9 +238,88 @@ class LightweightMatrixTests(unittest.TestCase):
         self.write_draft()
         self.assertNotEqual(self.build("--check").returncode, 0)
         self.assertEqual(self.build().returncode, 0)
-        markdown = self.article / "handoff/visual-payload.md"
+        markdown = self.article / "preview/visual-payload.md"
         markdown.write_text(markdown.read_text().replace("Updated reader summary.", "Other summary."))
         self.assertNotEqual(self.build("--check").returncode, 0)
+
+    def test_complete_hosted_pair_requires_verification_and_tracks_url_changes(self):
+        self.write_plan()
+        self.freeze()
+        self.assertNotEqual(self.build(final=True).returncode, 0)
+        for item in self.front["images"] + [self.front["cover"]]:
+            item["public_url"] = "https://images.example.com/" + Path(item["file"]).name
+        self.front["images"][0]["alt"] = 'Scene [one] & "motion"'
+        self.write_draft()
+        self.assertIn("--verify-images", self.build(final=True).stderr)
+        spec = importlib.util.spec_from_file_location("hosted_builder_test", SCRIPT)
+        builder = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(builder)
+        loader = builder.module
+        helper = loader("hosted_test_helper", SCRIPT.with_name("public_images.py"))
+        def load(name, path):
+            return helper if name == "public_image_checks" else loader(name, path)
+        def verify(records):
+            return {"checked_at": "2026-10-15T00:00:00+00:00",
+                    "images": [{**x, "content_type": "image/png"} for x in records]}
+        with patch.object(builder, "module", side_effect=load), patch.object(helper, "verify", side_effect=verify):
+            builder.build(self.plan_path, "A01", verify_images=True)
+        html = (self.article / "handoff/visual-payload.html").read_text()
+        markdown = (self.article / "handoff/visual-payload.md").read_text()
+        self.assertEqual(html.count("<img "), 4)
+        self.assertEqual(markdown.count("](<https://images.example.com/"), 4)
+        self.assertIn('alt="Scene [one] &amp; &quot;motion&quot;"', html)
+        self.assertIn('![Scene \\[one\\] & "motion"]', markdown)
+        self.assertLess(html.index("Keep the input clear."), html.index("02-middle-example.png"))
+        self.assertIn('id="cover-image"', html)
+        article_html = html.split('<article id="article-body"', 1)[1].split("</article>", 1)[0]
+        article_markdown = markdown.split("## SEO Metadata", 1)[0]
+        self.assertNotRegex(article_html, r"[\u4e00-\u9fff]")
+        self.assertNotRegex(article_markdown, r"[\u4e00-\u9fff]")
+        self.assertNotIn("<aside", article_html)
+        self.assertIn("Keep the input clear.", article_html)
+        self.assertIn("Check the result.", article_html)
+        self.assertIn("Disclosure: I am the founder.", article_html)
+        self.assertIn("Keep the input clear.", article_markdown)
+        self.assertIn("Check the result.", article_markdown)
+        self.assertIn("Disclosure: I am the founder.", article_markdown)
+        self.assertGreater(html.index('id="image-reference"'), html.index("</article>"))
+        self.assertEqual(self.build("--check", final=True).returncode, 0)
+        self.front["images"][1]["public_url"] = "https://other.example.com/new.png"
+        self.write_draft()
+        self.assertIn("--verify-images", self.build(final=True).stderr)
+        self.assertNotEqual(self.build("--check", final=True).returncode, 0)
+
+    def test_unsafe_public_image_url_is_rejected(self):
+        self.front["images"][0]["public_url"] = 'javascript:alert(1)'
+        self.write_draft()
+        self.freeze()
+        self.assertNotEqual(self.build(final=True).returncode, 0)
+
+    def test_final_default_needs_public_urls_and_preview_is_never_handoff(self):
+        self.freeze()
+        brief = json.loads(self.build("--brief").stdout)
+        self.assertTrue(brief["requirements"]["delivery_requirements"]["public_image_urls_required"])
+        result = self.build(final=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("public_url", result.stderr)
+        self.assertFalse((self.article / "handoff").exists())
+        preview = self.build()
+        self.assertEqual(preview.returncode, 0, preview.stderr)
+        self.assertEqual(json.loads(preview.stdout)["next_step"], "FINISH_PUBLIC_IMAGE_DELIVERY")
+        self.assertTrue((self.article / "preview/visual-payload.html").is_file())
+        self.assertFalse((self.article / "handoff").exists())
+
+    def test_explicit_false_cannot_downgrade_final_delivery(self):
+        self.plan["shared"]["delivery_requirements"] = {"public_image_urls_required": False}
+        self.write_plan()
+        self.freeze()
+        original = self.plan_path.read_bytes()
+        result = self.build(final=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("final delivery requires public image URLs", result.stderr)
+        self.assertEqual(self.plan_path.read_bytes(), original)
+        self.assertFalse((self.article / "handoff").exists())
+        self.assertEqual(self.build().returncode, 0)
 
 
 if __name__ == "__main__":

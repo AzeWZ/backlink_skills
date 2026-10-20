@@ -13,7 +13,8 @@
     },
     "delivery_requirements": {
       "minimum_body_images": 3,
-      "cover_required": true
+      "cover_required": true,
+      "public_image_urls_required": true
     },
     "keyword_requirements": [
       {
