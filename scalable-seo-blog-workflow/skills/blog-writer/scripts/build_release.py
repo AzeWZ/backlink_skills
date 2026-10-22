@@ -113,6 +113,23 @@ def article_context(plan, identifier):
     cta["mode"] = "SECONDARY_RECOMMENDATION"
     I = module("lean_delivery_checks", MATRIX / "skills/blog-human-handoff/scripts/content_integrity.py")
     errors = I.policy_errors(row.get("link_policy"))
+    if errors:
+        raise ValueError("; ".join(errors))
+    policy = copy.deepcopy(row.get("link_policy") or {})
+    primary_domain = I.host(cta["product_destination_url"])
+    if not primary_domain:
+        raise ValueError("required CTA needs a target product domain")
+    brands = policy.setdefault("target_brand_names", {})
+    # New builds enforce the rule even when the plan omits the optional map.
+    # Do not guess shorter aliases or rewrite the owner's locked anchor.
+    if not any(primary_domain == I.host(d) or primary_domain.endswith("." + I.host(d)) for d in brands):
+        brands[primary_domain] = [cta["product_name"]]
+    for domain in policy.get("target_domains", []):
+        domain = I.host(domain)
+        if not any(domain == I.host(d) or domain.endswith("." + I.host(d)) for d in brands):
+            errors.append("target domain needs confirmed target_brand_names: " + domain)
+    errors.extend(I.brand_anchor_errors([(cta["product_destination_url"], cta["anchor_text"])], policy))
+    row["link_policy"] = policy
     requirements = row.get("delivery_requirements", {})
     for field in ("body_image_count", "minimum_body_images"):
         if field in requirements and (type(requirements[field]) is not int or requirements[field] < 0):

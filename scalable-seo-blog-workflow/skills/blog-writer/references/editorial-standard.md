@@ -11,6 +11,7 @@ Independent R audits the final rendered payload, actual images and material sour
 | Search language | Keep the shared keyword as the research anchor, but use natural target-language wording and varied title sentences that preserve all required meanings. Only explicitly locked wording requires a complete phrase. Long-tail questions receive useful answers without density or placement quotas. |
 | Metadata | Title and description accurately summarize the article; platform title equals the canonical article title by default and no stronger SEO title is left unused. |
 | Links | Descriptive text, real href, and an appropriate source or secondary-recommendation role. |
+| Target brand anchors | Every target-product text link visibly includes the corresponding confirmed brand name, with concise task-relevant wording. A nearby mention, URL, hidden text or image-only link does not replace it. Preserve locked text and link counts; resolve conflicts with G/owner rather than silently changing them. |
 | Images | Inspect every final image against its adjacent copy: it clarifies a relevant step, concept or choice without inventing UI, results or measured evidence. Rights/source, accurate alt, caption and semantic position are recorded; file metadata alone cannot establish visual quality. |
 | Recommendation integrity | The required frozen CTA is secondary and contextually relevant; its exact visible anchor text, product identity, destination and material claims have a traceable basis, any material relationship is clearly disclosed, and no unsupported reliability/ranking/test claim appears. |
 | Voice | Direct, specific and free of invented experience. Relate tone, technical depth, terminology and applicable illustration style to the user's brand guidance first, then the verified destination, while adapting to the target language and platform. Preserve editorial independence; do not copy sales language or imply official authorship. Check for a material mismatch between the article's implied audience, use case or benefit and the destination. Keep the exact required CTA and URL; adjust surrounding prose, not frozen positioning. |
@@ -33,15 +34,17 @@ G 对照用户原要求核最终交付和当前质量凭据，不只相信作者
 
 ### 品牌风格、独立封面与链接风险
 
-- 图文语气、称谓、色彩、插画气质和专业程度尽量与用户提供的品牌资料及已核验官网一致；先复用现有资料，不另扫全站或新增风格报告。与目标语言和平台读者习惯协调，不照搬广告、不为“像品牌”编造事实。没有参考资料时如实说明，采用清晰克制的表达，不声称已匹配品牌。
+- 图文语气、色彩、光线、材质、字体及插画或摄影气质尽量呼应用户提供的品牌资料与已核验官网；先复用适用资料，不另扫全站或新增风格报告。品牌一致体现在整体视觉，不只是加 Logo 或换背景色，也不等于固定同一构图。与目标语言和读者习惯协调，不照搬广告或编造事实；缺少参考时如实说明，采用清晰克制的风格，不声称已匹配品牌。
 - 默认在已确认的正文图片之外单独准备一张封面；三张正文图意味着三张正文图加一张封面。封面对应文章主题、品牌气质与平台封面尺寸，不直接拿正文首图顶替，不减少正文首中尾覆盖。交付独立 PNG/JPG/JPEG，建议名为 `00-cover-<slug>.png`。封面不是正文插图，不使用正文图片位置标记；在原视觉清单的 `cover_image` 单独记录文件、Alt、来源及视觉检查信息，不放进正文 `assets` 数组，不新增清单。旧项目图片约定不静默改动，用户另有封面要求时按确认值。
 - 严格避免低价值挂链内容：正文须独立有用，每篇有具体读者问题；不以批量雷同稿、无关或强塞锚文本、重复推广、隐蔽链接和虚假第三方背书服务排名操纵。用户明确指定的多锚文本、多外链不因数量多就一律禁止，也不能被擅删；逐条保持用途相关、事实依据、商业披露和平台规则相符。指向目标站的正文介绍、推荐和来源链接按实际出现次数合并，不能按用途豁免；有数量约定则核对，无约定不编造上限。引用资料有依据不等于每次提及都新增超链接。
+- 目标产品文字外链的可见锚文本必须包含对应的已确认品牌名，优先采用品牌加当前用途的自然写法，不强塞完整关键词。介绍、推荐及作为来源的目标产品链接同样检查；第三方参考资料不强加本品牌。采用官方或用户确认的品牌写法，不以其他模型、供应商名称或自行翻译的名称替代目标品牌。锁定文案与品牌要求冲突时写前交 G/用户决定，不能事后改字、增加链接或悄改旧稿。程序核文本、网址与数量，R 在原有一轮审核中判断实际可见性、语义和上下文。
 - 商业推广或赞助涉及链接标注要求时，在原发布提示中说明适用要求和平台可控限制，不绕过政策。内容有用、多链接获用户确认或本地检查通过，都不能保证平台/搜索引擎零误判，也不等于不存在链接垃圾内容风险。真实冲突交原 G/用户决定，不强行发布或悄悄删 CTA。
 
 以上与正文、图片、推荐判断并入原有一轮质量核验，不新增外链风险报告或审稿轮次。
 
 把以下判断并入独立 R 的一轮完整审核；W 在创作中按同一标准正常编辑，不另做正式完整自查。不新增清单、报告、研究或审稿阶段，发现问题只修受影响的图片、段落与交付投影。
 
+- **内容丰富，画法随问题变化。** 在原图片提示词中先说明“读者需要看懂什么，画面必须出现什么”。用相关对象、场景、动作、变化和细节丰富内容，保持主次与适量文字，不靠装饰堆积或把更多正文塞进方框。按需要选择场景演示、过程展开、同条件比较、记录表或填写后的交付样例；不要求每图或每篇凑齐类型，不固定元素数量。封面侧重吸引力与主题，方法类正文图侧重解释和示范；避免机械重复版式或以正文摘要卡代替示范。表格和记录材料在图中可展示填写样例，正文另给可复制版本；假设示例须标明，不能伪造实测记录。
 - **图片真正讲对方法。** 看最终图片能否帮助读者理解相邻操作，而不只是与主题相关。延续同一示例时保留识别重点和必要构图；裁切图须来自同一画面，循环或衔接图须画清首尾与运动关系，流程顺序和图中文字须符合实际方法。不能用“仅示意”“比喻”或长图注掩盖换对象、错误术语或画错操作；图注用于补充条件，不是替图片纠错。真正在讲错误诊断时可保留明确标注的反例，但不能把普通教学图的意外错误包装成反例。局部问题优先局部改图，不重做无关图片或全文；修后同步准确 Alt、图注和载荷。
 - **限制说明不喧宾夺主。** 方法示例不是实测时，在合适位置集中说明其性质；不要每个提示词、步骤或推荐后重复“未实测、不保证、不能证明”。局部只保留会改变读者选择、输入或操作的限制，例如输入要求、音轨处理、可用规格、权利条件及不同工具的适用范围。把限制写成可执行提醒，少写审核口吻；不规定免责声明次数，也不能为简洁删掉用户要求的披露、掩盖重大未知项或保留无依据主张。读者最终应清楚知道能做什么、下一步怎么做，而不只知道作者没有保证什么。
 - **产品推荐具体服务当前任务。** 正文仍须独立有用，必保留的 CTA 锚文本、链接及关系披露不变。推荐说明该产品在本篇方法中承担的具体一步、对应的已核验能力或适用条件，以及必要的后续操作；不用批量通用推荐尾段替代真实衔接。同一 CTA 和披露可以复用，周围解释按当前读者任务写；不为制造差异硬改文案或增加推广次数。产品作用须有事实依据，不能把工具建议写成已验证的效果、虚构必不可少的专有能力或宣称只有本品牌能完成任务。若能力不足以支持已确认推荐，说明冲突，不强行串联或擅自删 CTA。

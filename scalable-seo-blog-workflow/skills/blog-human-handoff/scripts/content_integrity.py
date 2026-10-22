@@ -4,6 +4,7 @@ import hashlib
 from html.parser import HTMLParser
 from pathlib import Path
 import re
+import unicodedata
 from urllib.parse import urlsplit
 
 
@@ -41,6 +42,46 @@ def policy_errors(policy: object) -> list[str]:
                 errors.append("required_links entries need href and anchor_text")
             elif "count" in item and (isinstance(item["count"], bool) or not isinstance(item["count"], int) or item["count"] < 1):
                 errors.append("required_links.count must be a positive integer when specified")
+    brands = policy.get("target_brand_names", {})
+    if not isinstance(brands, dict):
+        errors.append("link_policy.target_brand_names must map domains to confirmed brand names")
+    else:
+        for domain, names in brands.items():
+            if (not isinstance(domain, str) or not host(domain)
+                    or re.search(r"[\s/@:#?]", domain)):
+                errors.append("target_brand_names keys must be explicit domain names")
+            if (not isinstance(names, list) or not names
+                    or any(not isinstance(name, str) or not name.strip() for name in names)):
+                errors.append("target_brand_names entries need non-empty confirmed brand names")
+    return errors
+
+
+def anchor_has_brand(text: str, names: list[str]) -> bool:
+    text = " ".join(unicodedata.normalize("NFKC", text).casefold().split())
+    # A URL is not a substitute for a brand-bearing text recommendation.
+    if re.fullmatch(r"(?:https?://|www\.)\S+", text):
+        return False
+    for name in names:
+        name = " ".join(unicodedata.normalize("NFKC", name).casefold().split())
+        prefix = r"(?<![a-z0-9])" if re.match(r"[a-z0-9]", name[0]) else ""
+        suffix = r"(?![a-z0-9])" if re.match(r"[a-z0-9]", name[-1]) else ""
+        if re.search(prefix + re.escape(name) + suffix, text):
+            return True
+    return False
+
+
+def brand_anchor_errors(anchors, policy: dict) -> list[str]:
+    brands = {host(domain): names for domain, names in policy.get("target_brand_names", {}).items()}
+    errors = []
+    for url, text in anchors:
+        domain = host(url)
+        matches = [key for key in brands if domain == key or domain.endswith("." + key)]
+        if matches:
+            names = brands[max(matches, key=len)]
+            bare_address = (not re.search(r"\s", text) and "." in text.split("/", 1)[0]
+                            and host(text) == domain)
+            if bare_address or not anchor_has_brand(text, names):
+                errors.append("target product anchor must contain its confirmed brand name: " + url)
     return errors
 
 
@@ -52,8 +93,17 @@ class Links(HTMLParser):
         self.parts = []
         self.code_depth = 0
         self.bare_urls = []
+        self.visibility = []
 
     def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        hidden = (bool(self.visibility and self.visibility[-1][1])
+                  or tag in {"script", "style", "template", "noscript"}
+                  or "hidden" in attributes
+                  or bool(re.search(r"(?:display\s*:\s*none|visibility\s*:\s*(?:hidden|collapse))",
+                                    attributes.get("style") or "", re.I)))
+        if tag not in {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}:
+            self.visibility.append((tag, hidden))
         if tag in {"pre", "code"}:
             self.code_depth += 1
         if tag == "a":
@@ -61,12 +111,18 @@ class Links(HTMLParser):
             self.parts = []
 
     def handle_data(self, data):
+        if self.visibility and self.visibility[-1][1]:
+            return
         if self.current is not None:
             self.parts.append(data)
         elif not self.code_depth:
             self.bare_urls.extend(re.findall(r"https?://[^\s<>]+", data))
 
     def handle_endtag(self, tag):
+        for index in range(len(self.visibility) - 1, -1, -1):
+            if self.visibility[index][0] == tag:
+                del self.visibility[index:]
+                break
         if tag in {"pre", "code"}:
             self.code_depth = max(0, self.code_depth - 1)
         if tag == "a" and self.current is not None:
@@ -83,6 +139,7 @@ def check_links(body: str, policy: dict | None, cta: dict) -> tuple[dict, list[s
     parser.feed(body)
     domains = {host(d) for d in policy.get("target_domains", [])}
     domains.add(host(cta.get("product_destination_url", "")))
+    domains.update(host(d) for d in policy.get("target_brand_names", {}))
     domains.discard("")
 
     def target(url):
@@ -92,6 +149,7 @@ def check_links(body: str, policy: dict | None, cta: dict) -> tuple[dict, list[s
     web = [(url, text) for url, text in parser.anchors if urlsplit(url).scheme in {"http", "https"}]
     targets = [(url, text) for url, text in web if target(url)]
     bare_targets = [url for url in parser.bare_urls if target(url)]
+    errors.extend(brand_anchor_errors(web, policy))
     stats = {
         "web_link_occurrences": len(web),
         "target_link_occurrences": len(targets),
