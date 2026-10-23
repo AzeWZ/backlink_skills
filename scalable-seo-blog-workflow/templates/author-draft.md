@@ -1,6 +1,6 @@
 ---json
 {
-  "seo_title": "Replace with a specific search-oriented title",
+  "seo_title": "Write a concise page title, keeping the core topic and required conditions",
   "tags": ["topic", "reader task"],
   "description": "Summarize the useful answer and its scope for search results.",
   "excerpt": "Write a short reader-facing summary for the platform article card or introduction.",
@@ -23,7 +23,7 @@
   }
 }
 ---
-# Replace with this article's reader problem
+# Write the full reader-facing article title / H1
 
 Write a useful opening, preserving the required language and keyword meanings.
 

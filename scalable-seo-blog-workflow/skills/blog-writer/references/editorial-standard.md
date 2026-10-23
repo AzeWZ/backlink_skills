@@ -9,7 +9,7 @@ Independent R audits the final rendered payload, actual images and material sour
 | Facts | Material factual claims have evidence supporting their specific meaning. Partial evidence permits a narrower claim with stated limits; no evidence requires removal or an explicit unverified status, never mere hedging such as "may" or "often". Analysis explains its basis, and hypothetical examples are labelled rather than presented as observed results. |
 | Structure | One canonical article title; descriptive ordered sections/subsections; no empty headings, repeated definitions or padded summaries. Let information determine section count and paragraph shape; do not require a fixed four-part paragraph, list length or FAQ count. Canonical markup is an authoring outline, not evidence of the target platform's final semantic tags. |
 | Search language | Keep the shared keyword as the research anchor, but use natural target-language wording and varied title sentences that preserve all required meanings. Only explicitly locked wording requires a complete phrase. Long-tail questions receive useful answers without density or placement quotas. |
-| Metadata | Title and description accurately summarize the article; platform title equals the canonical article title by default and no stronger SEO title is left unused. |
+| Metadata | The article title/intended H1 and page SEO title are separate fields with the same topic, keyword intent and promise. Use the canonical article title for the visible platform heading; use a concise `seo_title` for the page `<title>` or dedicated SEO field. Judge length by language, display width and any site-name suffix, not a universal character gate. Record platforms that couple both titles. Description accurately summarizes the article. |
 | Links | Descriptive text, real href, and an appropriate source or secondary-recommendation role. |
 | Target brand anchors | Every target-product text link visibly includes the corresponding confirmed brand name, with concise task-relevant wording. A nearby mention, URL, hidden text or image-only link does not replace it. Preserve locked text and link counts; resolve conflicts with G/owner rather than silently changing them. |
 | Images | Inspect every final image against its adjacent copy: it clarifies a relevant step, concept or choice without inventing UI, results or measured evidence. Rights/source, accurate alt, caption and semantic position are recorded; file metadata alone cannot establish visual quality. |
@@ -54,6 +54,14 @@ G 对照用户原要求核最终交付和当前质量凭据，不只相信作者
 先按用户原始要求区分必保留主词、研究种子、文章角度；共同主词适用的每篇都须继承，不能仅第一篇保留、其余用延伸词替换。作者选词与标题互相一致，不等于符合用户要求；核验须回到 G 投影的共享要求。自然本地化允许自主优化，但不能丢掉保护含义；多篇英文稿需要不同读者问题，不要求主词不同。记录与权限见[关键词要求](../../../docs/keyword-requirements.md)。
 
 默认保护关键词的全部核心含义，不要求标题或预期 H1 逐字复制整段短语。主关键词记录仍继承用户要求，不能被角度词替换；标题允许自然变体、调整词序和不同句式，但每篇标题/H1 都须表达所有保护条件，不能只在正文、CTA 或元数据中补齐。这是交付要求，不是排名保证。只有用户明确锁定原文时才按完整短语检查，旧项目已确认的逐字规则也不能静默放宽。SEO title 若兼作文章/平台标题同样遵守，独立元数据不替代文章标题。
+
+### 分开写页面 SEO title 与文章 H1
+
+`# 文章标题`对应读者看到的主标题和预期 H1，完整表达本篇问题；`seo_title`对应页面 `<title>` 或平台独立 SEO 标题栏，可采用更短的句式。两者须保留同一主题、关键词意图和必要条件，承诺一致，不要求逐字相同；明确锁定的文案仍按原确认。
+
+SEO title 将核心主题和必要条件前置，精简补充说明，并为平台自动附加的站名留空间。英文可先以约 60 字符以内作参考，其他语言按显示宽度调整；不为凑长度加词，也不机械截字或删去关键词含义。[Google 标题说明](https://developers.google.com/search/docs/appearance/title-link)指出，搜索标题会按显示宽度截断，也可能被改写；本地精简不能保证完整展示。
+
+支持独立字段的平台，文章标题栏用 H1 文案，SEO 标题栏用 `seo_title`。只有一个标题栏、页面标题由其自动生成时，如实说明两者联动，在原要求内拟定兼顾表达与长度的共用版本；已有锁定要求冲突时交用户决定。不把未能设置的 SEO 建议值当作已生效，也不为此新增审稿轮次。
 
 ### 统一核心含义，不统一标题句式
 

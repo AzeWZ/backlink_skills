@@ -2,6 +2,7 @@
 """Regression tests for the compiler-owned paired rich-text payloads."""
 from __future__ import annotations
 
+from html.parser import HTMLParser
 import hashlib
 import json
 from pathlib import Path
@@ -22,6 +23,29 @@ TINY_PNG = (
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+class TitleFieldsParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.fields = {"title": "", "h1": ""}
+        self.current_field = None
+        self.article_heading_count = 0
+
+    def handle_starttag(self, tag, attrs) -> None:
+        if tag == "title":
+            self.current_field = "title"
+        elif tag == "h1" and dict(attrs).get("id") == "blog-title":
+            self.current_field = "h1"
+            self.article_heading_count += 1
+
+    def handle_endtag(self, tag) -> None:
+        if tag in ("title", "h1"):
+            self.current_field = None
+
+    def handle_data(self, data) -> None:
+        if self.current_field:
+            self.fields[self.current_field] += data
 
 
 class SingleSourcePayloadTests(unittest.TestCase):
@@ -106,6 +130,52 @@ class SingleSourcePayloadTests(unittest.TestCase):
             },
         }), encoding="utf-8")
         return canonical, metadata, visual_manifest, evidence, package
+
+    def test_seo_title_is_independent_of_h1_in_both_payloads(self) -> None:
+        cases = [
+            ("en", "Free Image to Video Without Signup: Plan Two Frames for a Five-Second Clip",
+             "Free Image to Video Without Signup: Frame Guide"),
+            ("ja", "無料・登録不要の画像から動画生成で、2枚のフレームから短い映像を作る方法",
+             "無料・登録不要の画像から動画生成：2枚で作る"),
+            ("en", "Image to Video: Control Light & Motion Before You Generate",
+             "Image to Video: Light & Motion"),
+            ("en", "Image to Video: First Clip", "Image to Video: First Clip"),
+        ]
+        for language, article_title, seo_title in cases:
+            with self.subTest(language=language, seo_title=seo_title):
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    root = Path(temp_dir)
+                    canonical, metadata, visual_manifest, _evidence, package = self.make_workspace(root)
+                    data = json.loads(metadata.read_text())
+                    data.update(canonical_title=article_title, platform_title=article_title,
+                                seo_title=seo_title, language=language)
+                    metadata.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+                    record = json.loads(package.read_text())
+                    record["artifact_sources"]["metadata"]["sha256"] = sha256(metadata)
+                    package.write_text(json.dumps(record), encoding="utf-8")
+                    output = root / "handoff/visual-payload.html"
+                    output.parent.mkdir()
+                    result = self.run_script(
+                        BUILD, "--title", article_title, "--body-html", str(canonical),
+                        "--article-package", str(package), "--metadata-json", str(metadata),
+                        "--visual-manifest", str(visual_manifest), "--output", str(output),
+                    )
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                    parsed = TitleFieldsParser()
+                    parsed.feed(output.read_text(encoding="utf-8"))
+                    self.assertEqual(parsed.fields["title"], seo_title)
+                    self.assertEqual(parsed.fields["h1"], article_title)
+                    self.assertEqual(parsed.article_heading_count, 1)
+                    markdown = output.with_suffix(".md")
+                    companion = markdown.read_text(encoding="utf-8")
+                    self.assertIn("\n# " + article_title + "\n", companion)
+                    self.assertIn("- SEO title：" + seo_title, companion)
+                    valid = self.run_script(
+                        VALIDATE, "--payload", str(output), "--markdown-payload", str(markdown),
+                        "--article-package", str(package), "--required-coverage-zones", "LEAD",
+                        "--minimum-image-cards", "1",
+                    )
+                    self.assertEqual(valid.returncode, 0, valid.stdout + valid.stderr)
 
     def test_excerpt_is_checked_in_the_current_package_pair(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

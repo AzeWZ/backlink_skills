@@ -25,6 +25,8 @@ python skills/blog-writer/scripts/build_release.py --plan /项目/task-plan.json
 
 位于 `articles/A01/canonical/article.md`。顶部 `---json` / `---` 信息块只保存 SEO title、tags、description、excerpt（文章摘要）、图片文件/Alt/图注、封面及真实来源说明；之后一个 `# 标题` 和普通 Markdown 正文。格式见 `templates/author-draft.md`，不自行开发 HTML 壳、CSS、按钮。
 
+`# 标题`是文章可见主标题/预期 H1，信息块的 `seo_title`是独立页面标题。编译器将前者放在可复制标题区，后者放在页面 `<title>` 和 SEO 信息区。精简方法及平台只有一个标题栏时的处理见[标题标准](editorial-standard.md#分开写页面-seo-title-与文章-h1)。
+
 正文准确位置用单独的 `<!-- BLOG_3P_IMAGE:01 -->` 等编号标记，生成时替换为真实图片。图片放本篇目录，命名如 `images/01-lead-topic.png`、`02-middle-topic.jpg`、`03-closing-topic.png`；额外封面为 `00-cover-topic.png`，不能顶替正文首图。素材真实 PNG/JPG/JPEG，Alt/图注按文章语言写，文件和操作资料仅在正文外展示。数量和覆盖按确认方案执行。
 
 新稿必填 `excerpt`：用文章语言写一段简短摘要，供平台摘要栏或文章卡片使用，准确概括正文的读者问题和帮助，不新增未经支持的承诺。它与搜索结果用的 SEO description 分开保存，不机械照抄，也不强求完全不同；不新增字数/字符门槛。摘要位于页面底部，不混入正文。旧稿无此字段时保持兼容，不自动补写或重编译历史交付。
